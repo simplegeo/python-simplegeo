@@ -237,7 +237,7 @@ class Client(object):
 
         request.sign_request(self.signature, self.consumer, None)
         headers = request.to_header(self.realm)
-        headers['User-Agent'] = 'SimpleGeo Client v%s' % __version__
+        headers['User-Agent'] = 'SimpleGeo Client v%s' % API_VERSION
 
         resp, content = self.http.request(endpoint, method, body=body,
             headers=headers)

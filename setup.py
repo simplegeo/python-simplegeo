@@ -10,6 +10,7 @@ setup(name="simplegeo",
       url="http://github.com/simplegeo/python-simplegeo",
       packages = find_packages(),
       license = "MIT License",
+      install_requires=['httplib2>=0.6.0', 'oauth>=1.0.5'],
       keywords="simplegeo",
       zip_safe = True,
       tests_require=['nose', 'coverage'])
