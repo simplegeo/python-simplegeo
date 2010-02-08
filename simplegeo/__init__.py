@@ -130,7 +130,8 @@ class Client(object):
         'layer_stats_bytime': 'stats/%(layer)s/%(start)d,%(end)d.json',
     }
 
-    def __init__(self, host, port, key, secret, api_version=API_VERSION):
+    def __init__(self, key, secret, api_version=API_VERSION,
+        host="api.simplegeo.com", port=80):
         self.host = host
         self.port = port
         self.consumer = oauth.Consumer(key, secret)
