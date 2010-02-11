@@ -82,16 +82,16 @@ class APIError(Exception):
     """Base exception for all API errors."""
 
     def __init__(self, code, message, headers):
-        self.code = code
-        self.message = message
-        self.headers = headers
+        self._code = code
+        self._message = message
+        self._headers = headers
 
     def __getitem__(self, key):
         if key == 'code':
-            return self.code
+            return self._code
 
         try:
-            return self.headers[key]
+            return self._headers[key]
         except KeyError:
             return None
 
@@ -99,7 +99,7 @@ class APIError(Exception):
         return self.__repr__()
 
     def __repr__(self):
-        return "%s (#%s)" % (self.message, self.code)
+        return "%s (#%s)" % (self._message, self._code)
 
 
 class DecodeError(APIError):
@@ -238,7 +238,7 @@ class Client(object):
 
         request.sign_request(self.signature, self.consumer, None)
         headers = request.to_header(self.realm)
-        headers['User-Agent'] = 'SimpleGeo Client v%s' % API_VERSION
+        headers['User-Agent'] = 'SimpleGeo Python Client v%s' % API_VERSION
 
         resp, content = self.http.request(endpoint, method, body=body,
             headers=headers)
