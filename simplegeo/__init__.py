@@ -1,7 +1,6 @@
 import time
 import urllib
 import oauth2 as oauth
-import simplejson as json
 from httplib2 import Http
 from urlparse import urljoin
 
@@ -10,6 +9,12 @@ try:
     from hashlib import md5
 except ImportError:
     from md5 import new as md5
+
+
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
 
 API_VERSION = '0.1'
