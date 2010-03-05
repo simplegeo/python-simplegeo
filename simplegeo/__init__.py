@@ -245,26 +245,25 @@ class Client(object):
         headers = request.to_header(self.realm)
         headers['User-Agent'] = 'SimpleGeo Python Client v%s' % API_VERSION
 
-        resp, content = self.http.request(endpoint, method, body=body,
+        resp, content = self.http.request(endpoint, method, body=body, 
             headers=headers)
 
         if self.debug:
             print resp
             print content
-        
-	try:
-            content = json.loads(content)
-        except:
-            pass
-        
-	if resp['status'][0] != '2':
-            
+
+        if content: # Empty body is allowed.
+            try:
+                content = json.loads(content)
+            except ValueError:
+                raise DecodeError(resp, content)
+
+        if resp['status'][0] != '2':
             code = resp['status']
             message = content
             if isinstance(content, dict):
                 code = content['code']
                 message = content['message']
-            
             raise APIError(code, message, resp)
         
-	return content
+        return content
