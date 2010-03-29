@@ -128,6 +128,8 @@ class Client(object):
         'history': 'records/%(layer)s/%(id)s/history.json',
         'nearby': 'records/%(layer)s/nearby/%(arg)s.json',
         'nearby_address': 'nearby/address/%(lat)s,%(lon)s.json',
+        'density_day': 'density/%(day)s/%(lat)s,%(lon)s.json',
+        'density_hour': 'density/%(day)s/%(hour)s/%(lat)s,%(lon)s.json',
         'user_stats': 'stats.json',
         'user_stats_bytime': 'stats/%(start)d,%(end)d.json',
         'layer': 'layer/%(layer)s.json',
@@ -202,6 +204,13 @@ class Client(object):
 
     def get_nearby_address(self, lat, lon):
         endpoint = self.endpoint('nearby_address', lat=lat, lon=lon)
+        return self._request(endpoint, "GET")
+    
+    def get_density(self, lat, lon, day, hour=None):
+        if hour is not None:
+            endpoint = self.endpoint('density_hour', lat=lat, lon=lon, day=day, hour=hour)
+        else:
+            endpoint = self.endpoint('density_day', lat=lat, lon=lon, day=day)
         return self._request(endpoint, "GET")
 
     def get_user_stats(self, start=None, end=None):
