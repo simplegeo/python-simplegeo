@@ -126,7 +126,7 @@ class Client(object):
         'records': 'records/%(layer)s/%(ids)s.json',
         'add_records': 'records/%(layer)s.json',
         'history': 'records/%(layer)s/%(id)s/history.json',
-        'nearby': 'nearby/%(arg)s.json',
+        'nearby': 'records/%(layer)s/nearby/%(arg)s.json',
         'nearby_address': 'nearby/address/%(lat)s,%(lon)s.json',
         'user_stats': 'stats.json',
         'user_stats_bytime': 'stats/%(start)d,%(end)d.json',
@@ -196,8 +196,8 @@ class Client(object):
         endpoint = self.endpoint('history', layer=layer, id=id)
         return self._request(endpoint, "GET", data=kwargs)
 
-    def get_nearby(self, arg, **kwargs):
-        endpoint = self.endpoint('nearby', arg=arg)
+    def get_nearby(self, layer, arg, **kwargs):
+        endpoint = self.endpoint('nearby', layer=layer, arg=arg)
         return self._request(endpoint, "GET", data=kwargs)
 
     def get_nearby_address(self, lat, lon):
