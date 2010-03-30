@@ -228,7 +228,7 @@ class Client(object):
 
     def get_layer_stats(self, layer, start=None, end=None):
         if start is not None:
-            if not end is None:
+            if end is None:
                 end = time.time()
             endpoint = self.endpoint('layer_stats_bytime', layer=layer, start=start, end=end)
         else:
