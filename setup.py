@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(name="simplegeo",
-      version="0.0.1",
+      version="1.0.0",
       description="Library for interfacing with SimpleGeo's API",
       author="Joe Stump",
       author_email="joe@simplegeo.com",
