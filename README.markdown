@@ -1,6 +1,6 @@
 ## Introduction
 
-The SimpleGeo engineering team uses the [Python client](http://github.com/simplegeo/python-simplegeo) for testing, so we thought it would be valuable to write a tutorial on how to use our API with it.
+The SimpleGeo engineering team uses the [Python client](http://github.com/simplegeo/python-simplegeo) internally, so we thought it would make sense to write a good tutorial on how to use it.
 
 This tutorial is written using Terminal on Mac OS X, but if you are using a PC, you can download an SSH client like [Putty](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html).
 
@@ -62,7 +62,7 @@ You should get a JSON representation of your data:
         'id': '10066246075',
         'layerLink': { 
             'href': 'http://api.simplegeo.com/0.1/layer/com.simplegeo. \
-                        global.twitter.json'
+                    global.twitter.json'
          }
         'properties': {
             'body': 'I blame San Francisco. #alcohol',
@@ -76,7 +76,7 @@ You should get a JSON representation of your data:
             'username': 'brownjava'
         },
         'selfLink': {'href': 'http://api.simplegeo.com/0.1/records/com.simplegeo. \
-                                       global.twitter/10066246075.json'},
+                             global.twitter/10066246075.json'},
         'type': 'Feature'
         } ],
     'type': 'FeatureCollection'
