@@ -1,21 +1,9 @@
 import time
 import urllib
 import oauth2 as oauth
+import simplejson as json
 from httplib2 import Http
 from urlparse import urljoin
-
-
-try:
-    from hashlib import md5
-except ImportError:
-    from md5 import new as md5
-
-
-try:
-    import simplejson as json
-except ImportError:
-    import json
-
 
 __version__ = "unknown"
 try:
@@ -27,13 +15,8 @@ except ImportError:
 API_VERSION = '0.1'
 
 
-def sgid(layer, id):
-    return md5('.'.join((id, layer))).hexdigest()
-
-
 class Record(object):
-    def __init__(self, layer, id, lat, lon, type='object', 
-        created=None, **kwargs):
+    def __init__(self, layer, id, lat, lon, type='object', created=None, **kwargs):
         self.layer = layer
         self.id = id
         self.lon = lon
@@ -49,11 +32,7 @@ class Record(object):
     def from_dict(cls, data):
         if not data:
             return None
-
-        record = cls(data['properties']['layer'], data['id'], 
-            data['geometry']['coordinates'][0], 
-            data['geometry']['coordinates'][1])
-
+        record = cls(data['properties']['layer'], data['id'], data['geometry']['coordinates'][0], data['geometry']['coordinates'][1])
         record.type = data['properties']['type']
         record.created = data.get('created', record.created)
         record.__dict__.update(dict((k, v) for k, v in data['properties'].iteritems()
@@ -80,49 +59,45 @@ class Record(object):
         return self.to_json()
 
     def __hash__(self):
-        return hash(self.sgid)
+        return hash((self.layer, self.id))
 
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.id == other.id
-
-    @property
-    def sgid(self):
-        return sgid(self.layer, self.id)
 
 
 class APIError(Exception):
     """Base exception for all API errors."""
 
     def __init__(self, code, message, headers):
-        self._code = code
-        self._message = message
-        self._headers = headers
+        self.code = code
+        self.message = message
+        self.headers = headers
 
     def __getitem__(self, key):
         if key == 'code':
-            return self._code
+            return self.code
 
         try:
-            return self._headers[key]
+            return self.headers[key]
         except KeyError:
-            return None
+            raise AttributeError(key)
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        return "%s (#%s)" % (self._message, self._code)
+        return "%s (#%s)" % (self.message, self.code)
 
 
 class DecodeError(APIError):
     """There was a problem decoding the API's JSON response."""
 
     def __init__(self, headers, body):
-        APIError.__init__(self, 0, "Could not decode JSON.", headers)
-        self._body = body
+        super(DecodeError, self).__init__(None, "Could not decode JSON", headers)
+        self.body = body
 
     def __repr__(self):
-        return "%s - %s" % (self._headers, self._body)
+        return "headers: %s, content: <%s>" % (self.headers, self.body)
 
 
 class Client(object):
@@ -142,10 +117,12 @@ class Client(object):
         'layer': 'layer/%(layer)s.json',
         'layer_stats': 'stats/%(layer)s.json',
         'layer_stats_bytime': 'stats/%(layer)s/%(start)d,%(end)d.json',
+        'contains' : 'contains/%(lat)s,%(lon)s.json',
+        'overlaps' : 'overlaps/%(south)s,%(west)s,%(north)s,%(east)s.json',
+        'boundary' : 'boundary/%(id)s.json'        
     }
 
-    def __init__(self, key, secret, api_version=API_VERSION,
-        host="api.simplegeo.com", port=80):
+    def __init__(self, key, secret, api_version=API_VERSION, host="api.simplegeo.com", port=80):
         self.host = host
         self.port = port
         self.consumer = oauth.Consumer(key, secret)
@@ -204,7 +181,7 @@ class Client(object):
     def get_history(self, layer, id, **kwargs):
         endpoint = self.endpoint('history', layer=layer, id=id)
         return self._request(endpoint, "GET", data=kwargs)
-
+        
     def get_nearby(self, layer, arg, **kwargs):
         endpoint = self.endpoint('nearby', layer=layer, arg=arg)
         return self._request(endpoint, "GET", data=kwargs)
@@ -212,23 +189,20 @@ class Client(object):
     def get_nearby_address(self, lat, lon):
         endpoint = self.endpoint('nearby_address', lat=lat, lon=lon)
         return self._request(endpoint, "GET")
-    
-    def get_density(self, lat, lon, day, hour=None):
-        if hour is not None:
-            endpoint = self.endpoint('density_hour', lat=lat, lon=lon, day=day, hour=hour)
-        else:
-            endpoint = self.endpoint('density_day', lat=lat, lon=lon, day=day)
+
+    def contains(self, lat, lon):
+        endpoint = self.endpoint('contains', lat=lat, lon=lon)
         return self._request(endpoint, "GET")
 
-    def get_user_stats(self, start=None, end=None):
+    def get_user_stats(self, start=None, end=None, **kwargs):
         if start is not None:
             if end is None:
                 end = time.time()
             endpoint = self.endpoint('user_stats_bytime', start=start, end=end)
         else:
             endpoint = self.endpoint('user_stats')
-        return self._request(endpoint, "GET")
-
+        return self._request(endpoint, "GET", data=kwargs)
+    
     def get_layer(self, layer):
         endpoint = self.endpoint('layer', layer=layer)
         return self._request(endpoint, "GET")
@@ -242,6 +216,25 @@ class Client(object):
             endpoint = self.endpoint('layer_stats', layer=layer)
         return self._request(endpoint, "GET")
 
+    def get_density(self, lat, lon, day, hour=None):
+        if hour is not None:
+            endpoint = self.endpoint('density_hour', lat=lat, lon=lon, day=day, hour=hour)
+        else:
+            endpoint = self.endpoint('density_day', lat=lat, lon=lon, day=day)
+        return self._request(endpoint, "GET")
+
+    def get_overlaps(self, south, west, north, east, **kwargs):
+        endpoint = self.endpoint('overlaps', south=south, west=west, north=north, east=east)
+        return self._request(endpoint, "GET", data=kwargs)
+
+    def get_boundary(self, id):
+        endpoint = self.endpoint('boundary', id=id)
+        return self._request(endpoint, "GET")
+
+    def get_contains(self, lat, lon):
+        endpoint = self.endpoint('contains', lat=lat, lon=lon)
+        return self._request(endpoint, "GET")
+
     def _request(self, endpoint, method, data=None):
         body = None
         params = {}
@@ -252,16 +245,15 @@ class Client(object):
                 body = urllib.urlencode(data)
             else:
                 body = data
-
+        print endpoint
         request = oauth.Request.from_consumer_and_token(self.consumer, 
             http_method=method, http_url=endpoint, parameters=params)
 
         request.sign_request(self.signature, self.consumer, None)
         headers = request.to_header(self.realm)
-        headers['User-Agent'] = 'SimpleGeo Python Client v%s' % API_VERSION
+        headers['User-Agent'] = 'SimpleGeo Client v%s' % __version__
 
-        resp, content = self.http.request(endpoint, method, body=body, 
-            headers=headers)
+        resp, content = self.http.request(endpoint, method, body=body, headers=headers)
 
         if self.debug:
             print resp
@@ -280,5 +272,5 @@ class Client(object):
                 code = content['code']
                 message = content['message']
             raise APIError(code, message, resp)
-        
+
         return content
