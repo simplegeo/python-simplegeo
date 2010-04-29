@@ -10,7 +10,7 @@ Our Python client requires both `httplib2` and `oauth2`.
 
 1. Install the requirements:
     * Make sure you have [git](http://code.google.com/p/git-osx-installer/) installed.
-    * Download [httplib2](http://code.google.com/p/httplib2/downloads/list) and [oauth2](http://github.com/simplegeo/python-oauth2/downloads) and unpack them. To install, issue the following command: `sudo python setup.py setup.py` in each respective directory.
+    * Download [httplib2](http://code.google.com/p/httplib2/downloads/list) and [oauth2](http://github.com/simplegeo/python-oauth2/downloads) and unpack them. To install, issue the following command: `sudo python setup.py install` in each respective directory.
 1. Check out the [GitHub repository](http://github.com/simplegeo/python-simplegeo) and install the `simplegeo` Python module:
     * `git clone http://github.com/simplegeo/python-simplegeo.git`
     * `cd python-simplegeo`
