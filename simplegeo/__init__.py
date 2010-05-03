@@ -58,6 +58,9 @@ class Record(object):
     def __str__(self):
         return self.to_json()
 
+    def __repr__(self):
+        return "Record(layer=%s, id=%s, lat=%s, lon=%s)" % (self.layer, self.id, self.lat, self.lon)
+
     def __hash__(self):
         return hash((self.layer, self.id))
 
@@ -68,9 +71,9 @@ class Record(object):
 class APIError(Exception):
     """Base exception for all API errors."""
 
-    def __init__(self, code, message, headers):
+    def __init__(self, code, msg, headers):
         self.code = code
-        self.message = message
+        self.msg = msg
         self.headers = headers
 
     def __getitem__(self, key):
@@ -86,7 +89,7 @@ class APIError(Exception):
         return self.__repr__()
 
     def __repr__(self):
-        return "%s (#%s)" % (self.message, self.code)
+        return "%s (#%s)" % (self.msg, self.code)
 
 
 class DecodeError(APIError):
