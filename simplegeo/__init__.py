@@ -189,10 +189,6 @@ class Client(object):
         endpoint = self.endpoint('nearby_address', lat=lat, lon=lon)
         return self._request(endpoint, "GET")
 
-    def contains(self, lat, lon):
-        endpoint = self.endpoint('contains', lat=lat, lon=lon)
-        return self._request(endpoint, "GET")
-
     def get_layer(self, layer):
         endpoint = self.endpoint('layer', layer=layer)
         return self._request(endpoint, "GET")
