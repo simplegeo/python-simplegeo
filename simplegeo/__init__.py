@@ -137,7 +137,7 @@ class Client(object):
         self.http = Http()
 
     def __unicode__(self):
-        return "%s (%s, %s)" % (self.uri, self.secret, self.key)
+        return "%s (key=%s, secret=%s)" % (self.uri, self.key, self.secret)
 
     def __repr__(self):
         return self.__unicode__()
