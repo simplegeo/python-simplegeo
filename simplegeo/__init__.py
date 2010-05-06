@@ -115,11 +115,7 @@ class Client(object):
         'nearby_address': 'nearby/address/%(lat)s,%(lon)s.json',
         'density_day': 'density/%(day)s/%(lat)s,%(lon)s.json',
         'density_hour': 'density/%(day)s/%(hour)s/%(lat)s,%(lon)s.json',
-        'user_stats': 'stats.json',
-        'user_stats_bytime': 'stats/%(start)d,%(end)d.json',
         'layer': 'layer/%(layer)s.json',
-        'layer_stats': 'stats/%(layer)s.json',
-        'layer_stats_bytime': 'stats/%(layer)s/%(start)d,%(end)d.json',
         'contains' : 'contains/%(lat)s,%(lon)s.json',
         'overlaps' : 'overlaps/%(south)s,%(west)s,%(north)s,%(east)s.json',
         'boundary' : 'boundary/%(id)s.json'        
@@ -197,26 +193,8 @@ class Client(object):
         endpoint = self.endpoint('contains', lat=lat, lon=lon)
         return self._request(endpoint, "GET")
 
-    def get_user_stats(self, start=None, end=None, **kwargs):
-        if start is not None:
-            if end is None:
-                end = time.time()
-            endpoint = self.endpoint('user_stats_bytime', start=start, end=end)
-        else:
-            endpoint = self.endpoint('user_stats')
-        return self._request(endpoint, "GET", data=kwargs)
-    
     def get_layer(self, layer):
         endpoint = self.endpoint('layer', layer=layer)
-        return self._request(endpoint, "GET")
-
-    def get_layer_stats(self, layer, start=None, end=None):
-        if start is not None:
-            if end is None:
-                end = time.time()
-            endpoint = self.endpoint('layer_stats_bytime', layer=layer, start=start, end=end)
-        else:
-            endpoint = self.endpoint('layer_stats', layer=layer)
         return self._request(endpoint, "GET")
 
     def get_density(self, lat, lon, day, hour=None):
