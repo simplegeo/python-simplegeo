@@ -30,14 +30,14 @@ _Note: As our client matures, make sure to type `git pull` while in the `python-
 Fire up Python by typing `python` in your terminal window.
 
     >>> import simplegeo
-    >>> client = simplegeo.Client('YOUR_KEY', 'YOUR_SECRET')
+    >>> client = simplegeo.Client('your_key', 'your_secret')
 
 You can find your OAuth Token (key) and Secret on the [Account settings page](http://simplegeo.com/account/settings/). 
 
 Once you've set that up, make sure your client was initiated by simply typing `client`:
 
     >>> client
-    http://api.simplegeo.com:80 (YOUR_KEY, YOUR_SECRET)
+    http://api.simplegeo.com:80 (your_key, your_secret)
 
 Now you can start making API calls with `client`.
 
@@ -46,7 +46,7 @@ Now you can start making API calls with `client`.
 Let's do a nearby query using the global public Twitter layer in the center of San Francisco, using a radius of 1km. We will limit the query to 1 result for brevity:
 
     >>> import simplegeo
-    >>> client = simplegeo.Client('YOUR_KEY', 'YOUR_SECRET')`
+    >>> client = simplegeo.Client('your_key', 'your_secret')`
     >>> client.get_nearby('com.simplegeo.global.twitter', '37.765850, \
                           -122.437094', limit=1, radius=0.5)
 
@@ -123,7 +123,7 @@ To add a record using the Python client, you must first create a `Record` object
 
     >>> import simplegeo
     >>> from simplegeo import Client, Record
-    >>> client = Client('YOUR_KEY', 'YOUR_SECRET')`
+    >>> client = Client('your_key', 'your_secret')`
     >>> r = Record('com.simplegeo.test', '4', 37.786521, -122.397850)
 
 Now add the record:
@@ -148,7 +148,7 @@ A successful API response from adding a record would be a `202`, which means we'
 If you want to delete a record, simply call the `delete_record()` function, which activates the HTTP DELETE method endpoint. It takes two arguments: the layer name and a unique ID.
 
     >>> import simplegeo
-    >>> client = simplegeo.Client('YOUR_KEY', 'YOUR_SECRET')`
+    >>> client = simplegeo.Client('your_key', 'your_secret')`
     >>> client.delete_record('com.simplegeo.test', '4')
 
 
@@ -159,7 +159,7 @@ Using GeoJSON's `FeatureCollection` format you can input up to 100 records at a 
 To add multiple records, pass the layer name and a Python [list](http://docs.python.org/tutorial/datastructures.html#more-on-lists) of `Record`s:
 
     >>> import simplegeo
-    >>> client = simplegeo.Client('YOUR_KEY', 'YOUR_SECRET')`
+    >>> client = simplegeo.Client('your_key', 'your_secret')`
     >>> r1 = Record('com.simplegeo.test', '7', 37.786521, -122.397850, \
                     'place', 1262304000, name = 'Chatz Coffee')
     >>> r2 = Record('com.simplegeo.test', '8', 37.786274, -122.397513, \
@@ -176,7 +176,7 @@ Once you've added a few records to a layer of yours you're probably going to wan
 The `get_nearby()` takes a single string argument that should either be a `lat,lon` (e.g. `42.0896429,-84.187606`) or a geohash (e.g. `dpkpkq0myw55e`). Note that there is no space between the comma and the latitude and longitude. 
 
     >>> import simplegeo
-    >>> client = simplegeo.Client('YOUR_KEY', 'YOUR_SECRET')`
+    >>> client = simplegeo.Client('your_key', 'your_secret')`
     >>> client.get_nearby('com.simplegeo.global.twitter', '9q8yyyb')
     >>> client.get_nearby('com.simplegeo.global.twitter', '37.7865,-122.3976')
 
@@ -210,7 +210,7 @@ One of the more interesting features of SimpleGeo's API is that we keep track of
 This feature is useful for creating GPS tracks, breadcrumbs, and other historical traces you need to make for records over time and space.
 
     >>> import simplegeo
-    >>> client = simplegeo.Client('YOUR_KEY', 'YOUR_SECRET')`
+    >>> client = simplegeo.Client('your_key', 'your_secret')`
     >>> client.get_history('com.simplegeo.test', 'andrew')
 
 In return, you will receive a GeometryCollection in JSON format:
@@ -238,7 +238,7 @@ One thing to note is that this endpoint returns [GeoJSON](http://geojson.org) `P
 Let's do a density query for 9am in San Francisco's Financial District:
 
     >>> import simplegeo
-    >>> client = simplegeo.Client('YOUR_KEY', 'YOUR_SECRET')`
+    >>> client = simplegeo.Client('your_key', 'your_secret')`
     >>> client.get_density(37.78652, -122.39785, 'mon', 15)
 
 The third (`day`) and fourth (`hour`) arguments are both optional. If you do not specify a day it will use the current day according to Python's `date()` function, so make sure your timezones and such are set up accordingly. Another thing to note is that you *must* specify an hour if you want a specific hours and that hours are in local time. Below is an example of what the output would look like.
