@@ -84,6 +84,14 @@ You should get a JSON representation of your data:
 
 Please keep in mind that `get_nearby()` function is based on TIGER data and can be a little off depending on the exact placement of the latitude and longitude depending on their relation to the address. It's very, very accurate down to the street block, city, state, and zip code though.
 
+## Getting nearby points using a geohash
+
+You can also do a nearby query using a [geohash](http://geohash.org/):
+
+    >>> import simplegeo
+    >>> client = simplegeo.Client('your_key', 'your_secret')`
+    >>> client.get_nearby_geohash('com.simplegeo.global.twitter', '9q8y')
+
 ## Using the Reverse Geocoder
 
 You can use the `nearby/address/` endpoint to reverse geocode a lat/lon. Here is an example using a lat/lon from the center of San Francisco:

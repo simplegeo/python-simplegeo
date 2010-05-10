@@ -180,11 +180,15 @@ class Client(object):
     def get_history(self, layer, id, **kwargs):
         endpoint = self.endpoint('history', layer=layer, id=id)
         return self._request(endpoint, "GET", data=kwargs)
-        
-    def get_nearby(self, layer, arg, **kwargs):
-        endpoint = self.endpoint('nearby', layer=layer, arg=arg)
+
+    def get_nearby(self, layer, lat, lon, **kwargs):
+        endpoint = self.endpoint('nearby', layer=layer, arg='%s,%s' % (lat, lon))
         return self._request(endpoint, "GET", data=kwargs)
 
+    def get_nearby_geohash(self, layer, geohash, **kwargs):
+        endpoint = self.endpoint('nearby', layer=layer, arg=geohash)
+        return self._request(endpoint, "GET", data=kwargs)
+        
     def get_nearby_address(self, lat, lon):
         endpoint = self.endpoint('nearby_address', lat=lat, lon=lon)
         return self._request(endpoint, "GET")
