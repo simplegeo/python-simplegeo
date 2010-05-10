@@ -84,9 +84,42 @@ You should get a JSON representation of your data:
 
 Please keep in mind that `get_nearby()` function is based on TIGER data and can be a little off depending on the exact placement of the latitude and longitude depending on their relation to the address. It's very, very accurate down to the street block, city, state, and zip code though.
 
+## Using the Reverse Geocoder
+
+You can use the `nearby/address/` endpoint to reverse geocode a lat/lon. Here is an example using a lat/lon from the center of San Francisco:
+
+    >>> import simplegeo
+    >>> client = simplegeo.Client('your_key', 'your_secret')
+    >>> address = client.get_nearby_address(37.76580, -122.43704)
+    >>> address
+
+You should see a [GeoJSON](http://geojson.org/) object returned:
+
+    {
+       'geometry':{
+          'type':'Point',
+          'coordinates':[
+             -122.437094,
+             37.76585
+          ]
+       },
+       'type':'Feature',
+       'properties':{
+          'state_name':'California',
+          'street_number':'2403',
+          'country':'US',
+          'street':'15th St',
+          'postal_code':'94114',
+          'county_name':'San Francisco',
+          'county_code':'075',
+          'state_code':'CA',
+          'place_name':'San Francisco'
+       }
+    }
+
 ## Creating a Record
 
-To add a record using Python, you must first create a `Record` object:
+To add a record using the Python client, you must first create a `Record` object:
 
     >>> import simplegeo
     >>> from simplegeo import Client, Record
