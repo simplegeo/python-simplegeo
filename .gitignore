@@ -1,2 +1,9 @@
 *.pyc
 *.swp
+/*.egg-info
+/dist
+/lib
+/bin
+/include
+/.Python
+/*.egg
