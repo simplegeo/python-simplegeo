@@ -131,7 +131,7 @@ To add a record using the Python client, you must first create a `Record` object
 
     >>> import simplegeo
     >>> from simplegeo import Client, Record
-    >>> client = Client('your_key', 'your_secret')`
+    >>> client = Client('your_key', 'your_secret')
     >>> r = Record('com.simplegeo.test', '4', 37.786521, -122.397850)
 
 Now add the record:
