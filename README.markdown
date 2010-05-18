@@ -43,12 +43,12 @@ Now you can start making API calls with `client`.
 
 ## Getting nearby points using a latitude and longitude with a limit and a radius
 
-Let's do a nearby query using the global public Twitter layer in the center of San Francisco, using a radius of 1km. We will limit the query to 1 result for brevity:
+Let's do a nearby query using the global public Twitter layer in the center of San Francisco, using a `radius` of 0.5 kilometers. We will limit the query to 1 result for brevity:
 
     >>> import simplegeo
-    >>> client = simplegeo.Client('your_key', 'your_secret')`
-    >>> client.get_nearby('com.simplegeo.global.twitter', '37.765850, \
-                          -122.437094', limit=1, radius=0.5)
+    >>> client = simplegeo.Client('your_key', 'your_secret')
+    >>> client.get_nearby('com.simplegeo.global.twitter', 37.765850, \
+                          -122.437094, limit=1, radius=0.5)
 
 You should get a JSON representation of your data:
 
