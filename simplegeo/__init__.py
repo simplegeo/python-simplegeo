@@ -51,7 +51,7 @@ class Record(object):
             'properties': dict((k, v) for k, v in self.__dict__.iteritems() 
                                         if k not in ('lon', 'lat', 'id', 'created')),
         }
-    
+
     def to_json(self):
         return json.dumps(self.to_dict())
 
