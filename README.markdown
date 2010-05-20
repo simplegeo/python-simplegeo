@@ -212,7 +212,7 @@ If my application had been updating `andrew`'s location over time, then I'd be a
 
 ## Find all polygons that a given point contains
 
-The `get_contains` function takes a latitude and longitude, and returns all of the polygons or boundaries containing that point. 
+The `get_contains()` function takes a latitude and longitude, and returns all of the polygons or boundaries containing that point. 
 
 Let's find all of the polygons associated with this point, near Downingtown, PA:
 
@@ -223,7 +223,7 @@ In the returned response, you will see `Country`, `Province`, `County`, `Urban A
 
 ## Find all overlapping polygons and boundaries for a given bounding box
 
-You can use the `get_overlaps` function to see which polygons overlap a bounding box. The function takes four parameters: `south`, `west`, `north`, `east`. *These are single units of latitude and longitude. Let's explore and example. I'm using the metropolitan area of Grosse Pointe, Michigan:
+You can use the `get_overlaps()` function to see which polygons overlap a bounding box. The function takes four parameters: `south`, `west`, `north`, `east`. *These are single units of latitude and longitude. Let's explore and example. I'm using the metropolitan area of Grosse Pointe, Michigan:
 
     >>> south = 42.4166  # Grosse Pointe Farms
     >>> west = -82.9189  # Harper Woods
@@ -236,11 +236,21 @@ Notice how each value is a single latitude or longitude. Instead of referencing 
 
 _A great tool for finding latitudes and longitudes on a map is called [http://getlatlon.com](http://getlatlon.com/)._
 
-Now let's call the `get_overlaps` function in the Python interpreter:
+Now let's call the `get_overlaps()` function in the Python interpreter:
 
     >>> client.get_overlaps(south, west, north, east)
 
 In the returned response, you will see roughly 26 polygons, including three city boundaries, three zip codes, and a few Census tracts. For more information on the `overlaps/` endpoint, check out the [endpoints page](http://help.simplegeo.com/faqs/api-documentation/endpoints).
+
+
+## Find the boundary of a polygon
+
+If you tried the previous example, you will have noticed the id value `'id': 'County:Wayne:dpsb93'`. You can use the `get_boundary()` function to find the lat/lon boundaries of a given polygon. Here's how it works:
+
+    >>> client.get_boundary('County:Wayne:dpsb93')
+
+In the return response, you will see a valid GeoJSON feature object with all of the lat/lons of that polygon. In this case, 2,616 values were returned in the `geometry` block. More info on this function on the [endpoints page](http://help.simplegeo.com/faqs/api-documentation/endpoints).
+
 
 ## Fetching SpotRank Population Density
 
