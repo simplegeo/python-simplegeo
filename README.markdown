@@ -4,6 +4,7 @@ The SimpleGeo engineering team uses the [Python client](http://github.com/simple
 
 This tutorial is written using Terminal on Mac OS X, but if you are using a PC, you can download an SSH client like [Putty](http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html).
 
+
 ## Installation and Requirements
 
 Our Python client requires both `httplib2` and `oauth2`. 
@@ -25,6 +26,7 @@ If you get the above output, everything worked.
 
 _Note: As our client matures, make sure to type `git pull` while in the `python-simplegeo` directory to always get the latest version of the code._
 
+
 ## Creating an Instance of the Client
 
 Fire up Python by typing `python` in your terminal window.
@@ -41,12 +43,11 @@ Once you've set that up, make sure your client was initiated by simply typing `c
 
 Now you can start making API calls with `client`.
 
+
 ## Getting nearby points using a latitude and longitude with a limit and a radius
 
-Let's do a nearby query using the global public Twitter layer in the center of San Francisco, using a `radius` of 0.5 kilometers. We will limit the query to 1 result for brevity:
+Let's do a nearby query using the global public Twitter layer in the center of San Francisco, using a `radius` of 0.5 kilometers. The `get_nearby()` function takes a lat, and a lon. We will `limit` the query to 1 result for brevity:
 
-    >>> import simplegeo
-    >>> client = simplegeo.Client('your_key', 'your_secret')
     >>> client.get_nearby('com.simplegeo.global.twitter', 37.765850, \
                           -122.437094, limit=1, radius=0.5)
 
@@ -84,13 +85,13 @@ You should get a JSON representation of your data:
 
 Please keep in mind that `get_nearby()` function is based on TIGER data and can be a little off depending on the exact placement of the latitude and longitude depending on their relation to the address. It's very, very accurate down to the street block, city, state, and zip code though.
 
+
 ## Getting nearby points using a geohash
 
 You can also do a nearby query using a [geohash](http://geohash.org/):
 
-    >>> import simplegeo
-    >>> client = simplegeo.Client('your_key', 'your_secret')`
     >>> client.get_nearby_geohash('com.simplegeo.global.twitter', '9q8y')
+
 
 ## Using the Reverse Geocoder
 
@@ -125,13 +126,12 @@ You should see a [GeoJSON](http://geojson.org/) object returned:
        }
     }
 
+
 ## Creating a Record
 
 To add a record using the Python client, you must first create a `Record` object:
 
-    >>> import simplegeo
-    >>> from simplegeo import Client, Record
-    >>> client = Client('your_key', 'your_secret')
+    >>> from simplegeo import Record
     >>> r = Record('com.simplegeo.test', '4', 37.786521, -122.397850)
 
 Now add the record:
@@ -155,8 +155,6 @@ A successful API response from adding a record would be a `202`, which means we'
 
 If you want to delete a record, simply call the `delete_record()` function, which activates the HTTP DELETE method endpoint. It takes two arguments: the layer name and a unique ID.
 
-    >>> import simplegeo
-    >>> client = simplegeo.Client('your_key', 'your_secret')`
     >>> client.delete_record('com.simplegeo.test', '4')
 
 
@@ -166,37 +164,12 @@ Using GeoJSON's `FeatureCollection` format you can input up to 100 records at a 
 
 To add multiple records, pass the layer name and a Python [list](http://docs.python.org/tutorial/datastructures.html#more-on-lists) of `Record`s:
 
-    >>> import simplegeo
-    >>> client = simplegeo.Client('your_key', 'your_secret')`
     >>> r1 = Record('com.simplegeo.test', '7', 37.786521, -122.397850, \
                     'place', 1262304000, name = 'Chatz Coffee')
     >>> r2 = Record('com.simplegeo.test', '8', 37.786274, -122.397513, \
                     'place', 1262304000, name = 'CBS Interactive')
     >>> client.add_records('com.simplegeo.test', [r1,r2])
 
-## Querying for Nearby Records
-
-Once you've added a few records to a layer of yours you're probably going to want to query for records that are near your user. This is the basic use case that SimpleGeo was created for after all. In the Python, client there are two ways that you can query for nearby records.
-
-* By latitude and longitude with a radius.
-* By [geohash](http://geohash.org/).
-
-The `get_nearby()` takes a single string argument that should either be a `lat,lon` (e.g. `42.0896429,-84.187606`) or a geohash (e.g. `dpkpkq0myw55e`). Note that there is no space between the comma and the latitude and longitude. 
-
-    >>> import simplegeo
-    >>> client = simplegeo.Client('your_key', 'your_secret')`
-    >>> client.get_nearby('com.simplegeo.global.twitter', '9q8yyyb')
-    >>> client.get_nearby('com.simplegeo.global.twitter', '37.7865,-122.3976')
-
-You can query nearby points within a given `radius`:
-
-    >>> client.get_nearby('com.simplegeo.global.twitter', '37.7865,-122.3976', \
-                          radius = 0.5)
-
-Add a `limit` parameter to see less results:
-
-    >>> client.get_nearby('com.simplegeo.global.twitter', '37.7865,-122.3976', \
-                          radius = 0.5, limit = 2)
 
 ## Fetching a Record by ID
 
@@ -211,14 +184,13 @@ Grab multiple records at a time by passing in an array of unique IDs in string f
 
 The first call fetches a single record by its ID and the second fetches an array of records by IDs. If you are needing to fetch multiple records it makes much more sense to fetch using the `get_records()` method to reduce HTTP overhead and reduce the number of calls you make to the API.
 
+
 ## Fetching a Record's History
 
 One of the more interesting features of SimpleGeo's API is that we keep track of where a record has been over time. Every time a record is updated we take the record's previous postion, along with the time it was at that point, and push it into its history. This allows you to ping the API and see where a point has been throughout its history in the system. 
 
 This feature is useful for creating GPS tracks, breadcrumbs, and other historical traces you need to make for records over time and space.
 
-    >>> import simplegeo
-    >>> client = simplegeo.Client('your_key', 'your_secret')`
     >>> client.get_history('com.simplegeo.test', 'andrew')
 
 In return, you will receive a GeometryCollection in JSON format:
@@ -237,6 +209,18 @@ In return, you will receive a GeometryCollection in JSON format:
 
 If my application had been updating `andrew`'s location over time, then I'd be able to get a history of where `andrew` has been over time. It could also be used to track, say, which post office a particular Netflix DVD has been for a given time period.
 
+
+## Find all polygons that a given point contains
+
+The `get_contains` function takes a latitude and longitude, and returns all of the polygons or boundaries containing that point. 
+
+Let's find all of the polygons associated with this point, near Downingtown, PA:
+
+    >>> client.get_contains(40.0064958, -75.7032742)
+
+In the returned response, you will see `Country`, `Province`, `County`, `Urban Area`, `Neighborhood`, `Postal Code`, `Census Tract` and a few others, depending on the geography of your query. Check out our [endpoints page](http://help.simplegeo.com/faqs/api-documentation/endpoints) for more info.
+
+
 ## Fetching SpotRank Population Density
 
 We've partnered with Skyhook Wireless to provide access to their amazing SpotRank data. This data provides crowd-sourced population data for about 15% of the globe – mostly in metropolitan areas. 
@@ -245,8 +229,6 @@ One thing to note is that this endpoint returns [GeoJSON](http://geojson.org) `P
 
 Let's do a density query for 9am in San Francisco's Financial District:
 
-    >>> import simplegeo
-    >>> client = simplegeo.Client('your_key', 'your_secret')`
     >>> client.get_density(37.78652, -122.39785, 'mon', 15)
 
 The third (`day`) and fourth (`hour`) arguments are both optional. If you do not specify a day it will use the current day according to Python's `date()` function, so make sure your timezones and such are set up accordingly. Another thing to note is that you *must* specify an hour if you want a specific hours and that hours are in local time. Below is an example of what the output would look like.
