@@ -221,6 +221,27 @@ Let's find all of the polygons associated with this point, near Downingtown, PA:
 In the returned response, you will see `Country`, `Province`, `County`, `Urban Area`, `Neighborhood`, `Postal Code`, `Census Tract` and a few others, depending on the geography of your query. Check out our [endpoints page](http://help.simplegeo.com/faqs/api-documentation/endpoints) for more info.
 
 
+## Find all overlapping polygons and boundaries for a given bounding box
+
+You can use the `get_overlaps` function to see which polygons overlap a bounding box. The function takes four parameters: `south`, `west`, `north`, `east`. *These are single units of latitude and longitude. Let's explore and example. I'm using the metropolitan area of Grosse Pointe, Michigan:
+
+    >>> south = 42.4166  # Grosse Pointe Farms
+    >>> west = -82.9189  # Harper Woods
+    >>> north = 42.4465  # Grosse Pointe Woods
+    >>> east = -82.8753  # Grosse Pointe Shores
+
+Notice how each value is a single latitude or longitude. Instead of referencing a point, they are referencing a line on the map. Four of these creates a bounding box:
+
+![A bounding box "overlaps" query](http://s3.amazonaws.com/entp-tender-production/assets/7554bf80485472bae96d38d3b2b0140709157b5a/Get_Lat_Lon_-_find_the_latitude_and_longitude_of_a_point_on_a_map_normal.jpg)
+
+_A great tool for finding latitudes and longitudes on a map is called [http://getlatlon.com](http://getlatlon.com/)._
+
+Now let's call the `get_overlaps` function in the Python interpreter:
+
+    >>> client.get_overlaps(south, west, north, east)
+
+In the returned response, you will see roughly 26 polygons, including three city boundaries, three zip codes, and a few Census tracts. For more information on the `overlaps/` endpoint, check out the [endpoints page](http://help.simplegeo.com/faqs/api-documentation/endpoints).
+
 ## Fetching SpotRank Population Density
 
 We've partnered with Skyhook Wireless to provide access to their amazing SpotRank data. This data provides crowd-sourced population data for about 15% of the globe – mostly in metropolitan areas. 
