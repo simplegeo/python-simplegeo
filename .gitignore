@@ -7,3 +7,10 @@
 /include
 /.Python
 /*.egg
+/build
+/debian/files
+/debian/*stamp*
+/debian/*.log
+/debian/*.debhelper
+/debian/*.substvars
+/debian/python-simplegeo

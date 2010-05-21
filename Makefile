@@ -42,7 +42,8 @@ debian/changelog:
 
 deb: debian/changelog
 	dpkg-buildpackage -r$(ROOTCMD) -us -uc
-	mv ../python-simplegeo_* dist/
+	test -d dist/deb || mkdir -p dist/deb
+	mv ../python-simplegeo_* dist/deb
 
 test: bin/nosetests
 	$(SETUP) test
