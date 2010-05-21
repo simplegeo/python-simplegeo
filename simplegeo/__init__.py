@@ -226,7 +226,8 @@ class Client(object):
                 body = urllib.urlencode(data)
             else:
                 body = data
-        print endpoint
+        if self.debug:
+            print endpoint
         request = oauth.Request.from_consumer_and_token(self.consumer, 
             http_method=method, http_url=endpoint, parameters=params)
 
