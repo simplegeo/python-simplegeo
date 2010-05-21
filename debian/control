@@ -1,11 +1,10 @@
 Source: python-simplegeo
-Section: devel
+Section: python
 Priority: extra
 Maintainer: SimpleGeo Nerds <nerds@simplegeo.com>
-Build-Depends: debhelper (>= 7), cdbs (>= 0.4.59), python-central (>= 0.6.11)
-Standards-Version: 3.8.1
+Build-Depends: debhelper (>= 7), cdbs (>= 0.4.59), python (>= 2.6), python-support (>= 1.0.4)
+Standards-Version: 3.8.4
 Homepage: http://github.com/simplegeo/python-simplegeo/
-XS-Python-Version: 2.6
 
 Package: python-simplegeo
 Architecture: all
