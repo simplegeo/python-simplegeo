@@ -232,7 +232,7 @@ You can use the `get_overlaps()` function to see which polygons overlap a boundi
 
 Notice how each value is a single latitude or longitude. Instead of referencing a point, they are referencing a line on the map. Four of these creates a bounding box:
 
-![A bounding box "overlaps" query](http://s3.amazonaws.com/entp-tender-production/assets/7554bf80485472bae96d38d3b2b0140709157b5a/Get_Lat_Lon_-_find_the_latitude_and_longitude_of_a_point_on_a_map_normal.jpg)
+![bounding-box.jpg](http://s3.amazonaws.com/entp-tender-production/assets/6fe75a81c27ed5092d408f4b46daaea4137db655/bounding-box_normal.jpg)
 
 _A great tool for finding latitudes and longitudes on a map is called [http://getlatlon.com](http://getlatlon.com/)._
 
