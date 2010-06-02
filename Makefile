@@ -21,6 +21,7 @@ TESTS      := $(shell find $(SRCDIR) -type f -name test_\*.py)
 COVERED    := $(SOURCES)
 ROOT        = $(shell pwd)
 ROOTCMD     = fakeroot
+SIGN_KEY   ?= nerds@simplegeo.com
 BUILD_NUMBER ?= 1
 
 .PHONY: test dev clean extraclean debian/changelog
@@ -41,7 +42,7 @@ debian/changelog:
             --snapshot --snapshot-number=$(BUILD_NUMBER)
 
 deb: debian/changelog
-	dpkg-buildpackage -r$(ROOTCMD) -us -uc
+	dpkg-buildpackage -r$(ROOTCMD) -k$(SIGN_KEY)
 	test -d dist/deb || mkdir -p dist/deb
 	mv ../python-simplegeo_* dist/deb
 
