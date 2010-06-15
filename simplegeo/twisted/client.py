@@ -60,6 +60,6 @@ class Client(simplegeo.Client):
                 code = body['code']
                 message = body['message']
 
-            raise simplegeo.Client.APIError(code, message, response.headers)
+            raise simplegeo.APIError(code, message, response.headers)
 
         returnValue(body)
