@@ -32,7 +32,8 @@ class Record(object):
     def from_dict(cls, data):
         if not data:
             return None
-        record = cls(data['properties']['layer'], data['id'], data['geometry']['coordinates'][0], data['geometry']['coordinates'][1])
+        coord = data['geometry']['coordinates']
+        record = cls(data['properties']['layer'], data['id'], lat=coord[1], lon=coord[0])
         record.type = data['properties']['type']
         record.created = data.get('created', record.created)
         record.__dict__.update(dict((k, v) for k, v in data['properties'].iteritems()

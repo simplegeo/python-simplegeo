@@ -1,5 +1,11 @@
 python-simplegeo (1.1.4) unstable; urgency=low
 
+  * Creating a Record from a dictionary was using the wrong indexes for lat and lon
+
+ -- Derek Smith <derek@simplegeo.com>  Sat, 12 Jun 2010 10:01:10 -0700
+
+python-simplegeo (1.1.4) unstable; urgency=low
+
   * Build-depend on python-setuptools
   * Bump version.
 
