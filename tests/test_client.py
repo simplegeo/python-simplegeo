@@ -3,19 +3,27 @@ import random
 import unittest
 import simplejson as json
 import geohash
+import random
 from simplegeo import Client, Record, APIError
 
 MY_OAUTH_KEY = 'MY_OAUTH_KEY'
-MY_OAUTH_SECRET = 'MY_OAUTH_SECRET'
+MY_OAUTH_SECRET = 'MY_SECRET_KEY'
 TESTING_LAYER = 'TESTING_LAYER'
+
+if MY_OAUTH_KEY == 'MY_OAUTH_KEY' or \
+    MY_OAUTH_SECRET == 'MY_SERCRET_KEY' or \
+    TESTING_LAYER == 'TESTING_LAYER':
+    raise Exception('Please provide the proper credentials.')
 
 API_VERSION = '0.1'
 API_HOST = 'api.simplegeo.com'
 API_PORT = 80
 
-TESTING_GEOHASH = '9q8zn1'
+
 TESTING_LAT = '37.7481624945'
 TESTING_LON = '-122.433287165'
+TESTING_GEOHASH = geohash.encode(float(TESTING_LAT), float(TESTING_LON))
+
 TESTING_LAT_NON_US = '48.8566667'
 TESTING_LON_NON_US = '2.3509871'
 RECORD_TYPES = ['person', 'place', 'object']
@@ -23,8 +31,17 @@ TESTING_BOUNDS = [-122.43409, 37.747296999999996, -122.424768, 37.75184199999999
 
 class ClientTest(unittest.TestCase):
 
+    def tearDown(self):
+        for record in self.created_records:
+            try:
+                self.client.delete_record(record.layer, record.id)
+            except APIError, e:
+                # If we get a 404, then our job is done.
+                pass
+
     def setUp(self):
         self.client = Client(MY_OAUTH_KEY, MY_OAUTH_SECRET, API_VERSION, API_HOST, API_PORT)
+        self.created_records = []
 
     def _record(self):
         """ Generate a record in San Francisco. """
@@ -33,7 +50,7 @@ class ClientTest(unittest.TestCase):
 
         record = Record(
             layer=TESTING_LAYER,
-            id=str(int(time.time() * 1000000)),
+            id=str(int(random.random() * 1000000)),
             lat=str(random.uniform(top_left[0], bottom_right[0])),
             lon=str(random.uniform(top_left[1], bottom_right[1])),
             type=RECORD_TYPES[random.randint(0, 2)]
@@ -55,7 +72,7 @@ class ClientTest(unittest.TestCase):
     def test_too_many_records(self):
         record_limit = 100
         records = []
-        for i in xrange(record_limit + 1):
+        for i in range(record_limit + 1):
             records.append(self._record())
 
         self.assertRaises(APIError, self.client.add_records, TESTING_LAYER,
@@ -78,20 +95,24 @@ class ClientTest(unittest.TestCase):
         updated_result = self.client.get_record(record.layer, record.id)
         self.assertPointIsRecord(updated_result, updated_record)
         self.client.delete_record(record.layer, record.id)
+        time.sleep(5)
         self.assertRaises(APIError, self.client.get_record, record.layer, record.id)
         self.assertRaises(APIError, self.client.get_record, updated_record.layer, updated_record.id)
 
     def test_record_history(self):
         post_records = [self._record() for i in range(10)]
+        current_time = int(time.time())
         for record in post_records:
             record.id = post_records[0].id
-            record.created = int(time.time())
-            self.client.add_record(record)
-            time.sleep(1)
+            record.created = current_time
+            current_time -= 1
+
+        self.addRecordsAndSleep(TESTING_LAYER, post_records)
+
         history = self.client.get_history(TESTING_LAYER, post_records[0].id)
         points = history.get('geometries')
         self.assertEquals(len(points), 10)
-        post_records.reverse()
+
         count = 0
         for point in points:
             self.assertEquals(str(point.get('coordinates')[0]), post_records[count].lon)
@@ -100,6 +121,15 @@ class ClientTest(unittest.TestCase):
 
     def test_nearby_geohash_search(self):
         limit = 5
+        records = []
+        for i in range(limit):
+            record = self._record()
+            record.lat = float(TESTING_LAT) + (i / 10000000)
+            record.lon = float(TESTING_LON) - (i / 10000000)
+            records.append(record)
+
+        self.addRecordsAndSleep(TESTING_LAYER, records)
+
         nearby_result = self.client.get_nearby_geohash(TESTING_LAYER, TESTING_GEOHASH, limit=limit)
         features = nearby_result.get('features')
         self.assertTrue(len(features) <= limit)
@@ -110,12 +140,20 @@ class ClientTest(unittest.TestCase):
 
     def test_nearby_lat_lon_search(self):
         limit = 5
+        records = []
+        for i in range(limit):
+            record = self._record()
+            record.lat = float(TESTING_LAT) + (i / 10000000)
+            record.lon = float(TESTING_LON) - (i / 10000000)
+            records.append(record)
+
+        self.addRecordsAndSleep(TESTING_LAYER, records)
+
         radius = 1.5
         nearby_result = self.client.get_nearby(TESTING_LAYER, TESTING_LAT, TESTING_LON, limit=limit, radius=radius)
         features = nearby_result.get('features')
         self.assertTrue(len(features) <= limit)
         for feature in features:
-            print feature
             self.assertTrue(float(feature.get('distance')) <= radius*1000)
 
     def test_nearby_address_search(self):
@@ -169,10 +207,12 @@ class ClientTest(unittest.TestCase):
 
     def addRecordAndSleep(self, record):
         self.client.add_record(record)
+        self.created_records.append(record)
         time.sleep(5)
 
     def addRecordsAndSleep(self, layer, records):
         self.client.add_records(layer, records)
+        self.created_records += records
         time.sleep(5)
 
     def assertAddressEquals(self, record):
