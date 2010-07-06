@@ -30,4 +30,4 @@ setup(name=PKG,
       install_requires=['httplib2>=0.6.0', 'oauth2>=1.1.3', 'simplejson>=2.0.9'],
       keywords="simplegeo",
       zip_safe = True,
-      tests_require=['nose', 'coverage'])
+      tests_require=['nose', 'coverage', 'python-geohash>=0.2'])
