@@ -1,3 +1,3 @@
-from simplegeo.twisted.client import Client
+from simplegeo.twistd.client import Client
 
 __all__ = ['Client']
