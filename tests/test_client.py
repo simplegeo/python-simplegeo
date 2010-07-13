@@ -156,6 +156,27 @@ class ClientTest(unittest.TestCase):
         for feature in features:
             self.assertTrue(float(feature.get('distance')) <= radius*1000)
 
+    def test_nearby_tag_search(self):
+        limit = 5
+        records = []
+        for i in range(limit):
+            record = self._record()
+            record.lat = float(TESTING_LAT) + (i / 10000000)
+            record.lon = float(TESTING_LON) - (i / 10000000)
+            record.tags = ['restaurant', 'featured']
+            records.append(record)
+
+        records[0].tags = ['featured']
+        self.addRecordsAndSleep(TESTING_LAYER, records)
+
+        nearby_result = self.client.get_nearby(TESTING_LAYER, TESTING_LAT, TESTING_LON, tag='featured')
+        features = nearby_result.get('features')
+        self.assertTrue(len(features) == 5)
+
+        nearby_result = self.client.get_nearby(TESTING_LAYER, TESTING_LAT, TESTING_LON, tag='restaurant')
+        features = nearby_result.get('features')
+        self.assertTrue(len(features) == 4)
+
     def test_nearby_address_search(self):
         address_result = self.client.get_nearby_address(TESTING_LAT, TESTING_LON)
         self.assertAddressEquals(address_result)
