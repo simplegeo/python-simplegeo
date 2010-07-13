@@ -171,11 +171,11 @@ class ClientTest(unittest.TestCase):
 
         nearby_result = self.client.get_nearby(TESTING_LAYER, TESTING_LAT, TESTING_LON, tag='featured')
         features = nearby_result.get('features')
-        self.assertTrue(len(features) == 5)
+        self.assertEquals(len(features), 5)
 
         nearby_result = self.client.get_nearby(TESTING_LAYER, TESTING_LAT, TESTING_LON, tag='restaurant')
         features = nearby_result.get('features')
-        self.assertTrue(len(features) == 4)
+        self.assertEquals(len(features), 4)
 
     def test_nearby_address_search(self):
         address_result = self.client.get_nearby_address(TESTING_LAT, TESTING_LON)
