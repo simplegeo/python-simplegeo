@@ -221,7 +221,6 @@ class ClientTest(unittest.TestCase):
                           'http://api.simplegeo.com/0.1/records/%s/%s.json'
                             % (record.layer, record.id))
         self.assertEquals(point['created'], record.created)
-        self.assertEquals(point['properties']['type'], record.type)
         self.assertEquals(point['geometry']['type'], 'Point')
         self.assertEquals(point['geometry']['coordinates'][0], float(record.lon))
         self.assertEquals(point['geometry']['coordinates'][1], float(record.lat))
