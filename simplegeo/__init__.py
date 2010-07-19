@@ -16,12 +16,11 @@ API_VERSION = '0.1'
 
 
 class Record(object):
-    def __init__(self, layer, id, lat, lon, type='object', created=None, **kwargs):
+    def __init__(self, layer, id, lat, lon, created=None, **kwargs):
         self.layer = layer
         self.id = id
         self.lon = lon
         self.lat = lat
-        self.type = type
         if created is None:
             self.created = int(time.time())
         else:
