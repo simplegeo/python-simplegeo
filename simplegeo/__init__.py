@@ -33,10 +33,9 @@ class Record(object):
             return None
         coord = data['geometry']['coordinates']
         record = cls(data['properties']['layer'], data['id'], lat=coord[1], lon=coord[0])
-        record.type = data['properties']['type']
         record.created = data.get('created', record.created)
         record.__dict__.update(dict((k, v) for k, v in data['properties'].iteritems()
-                                    if k not in ('layer', 'type', 'created')))
+                                    if k not in ('layer', 'created')))
         return record
 
     def to_dict(self):
@@ -256,3 +255,4 @@ class Client(object):
             raise APIError(code, message, resp)
 
         return content
+

@@ -25,5 +25,5 @@ class RecordTest(unittest.TestCase):
         self.assertEquals(record.id, 'my_id')
         self.assertEquals(record.layer, 'my_layer')
         self.assertEquals(record.key, 'value')
-        self.assertEquals(record.properties['type'], 'object')
+        self.assertEquals(record.type, 'object')
                      
