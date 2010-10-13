@@ -118,8 +118,8 @@ class Client(object):
         'contains' : 'contains/%(lat)s,%(lon)s.json',
         'overlaps' : 'overlaps/%(south)s,%(west)s,%(north)s,%(east)s.json',
         'boundary' : 'boundary/%(id)s.json',    
-        'locate' : 'locate/%(ip_address)s.json'
-
+        'locate' : 'locate/%(ip_address)s.json',
+        'contains_ip_address' : 'contains/%(ip_address)s.json'
     }
 
     def __init__(self, key, secret, api_version=API_VERSION, host="api.simplegeo.com", port=80):
@@ -219,6 +219,10 @@ class Client(object):
 
     def get_locate(self, ip_address):
         endpoint = self.endpoint('locate', ip_address=ip_address)
+        return self._request(endpoint, "GET")
+
+    def get_contains_ip_address(self, ip_address):
+        endpoint = self.endpoint('contains_ip_address', ip_address=ip_address)
         return self._request(endpoint, "GET")
 
     def _request(self, endpoint, method, data=None):
