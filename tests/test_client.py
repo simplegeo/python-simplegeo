@@ -23,6 +23,7 @@ API_PORT = 80
 TESTING_LAT = '37.7481624945'
 TESTING_LON = '-122.433287165'
 TESTING_GEOHASH = geohash.encode(float(TESTING_LAT), float(TESTING_LON))
+TESTING_IP_ADDRESS = '173.164.32.246'
 
 TESTING_LAT_NON_US = '48.8566667'
 TESTING_LON_NON_US = '2.3509871'
@@ -208,6 +209,12 @@ class ClientTest(unittest.TestCase):
         self.assertEqual(density_results.get('properties').get('dayname'), 'mon')
         self.assertEqual(density_results.get('properties').get('hour'), 0)
         self.assertCorrectCoordinates(density_results.get('geometry').get('coordinates'))
+
+    def test_locate(self):
+        locate_results = self.client.get_locate(TESTING_IP_ADDRESS)
+        self.assertEqual(locate_results.get('geometry').get('type'), 'Point')
+        self.assertEqual(locate_results.get('geometry').get('coordinates')[0], -104.9793)
+        self.assertEqual(locate_results.get('geometry').get('coordinates')[1], 39.7437)
 
     # Utility functions
 
