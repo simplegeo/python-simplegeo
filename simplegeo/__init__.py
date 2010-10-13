@@ -194,6 +194,10 @@ class Client(object):
         endpoint = self.endpoint('nearby_address', lat=lat, lon=lon)
         return self._request(endpoint, "GET")
 
+    def get_nearby_ip_address(self, layer, ip_address, **kwargs):
+        endpoint = self.endpoint('nearby', layer=layer, arg=ip_address)
+        return self._request(endpoint, "GET", data=kwargs)
+
     def get_layer(self, layer):
         endpoint = self.endpoint('layer', layer=layer)
         return self._request(endpoint, "GET")
