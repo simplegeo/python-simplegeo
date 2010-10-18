@@ -189,7 +189,7 @@ class ClientTest(unittest.TestCase):
 
         nearby_result = self.client.get_nearby(TESTING_LAYER, TESTING_LAT, TESTING_LON, tag='featured', limit=5)
         features = nearby_result.get('features')
-        self.assertEquals(features, 5)
+        self.assertEquals(len(features), 5)
 
         nearby_result = self.client.get_nearby(TESTING_LAYER, TESTING_LAT, TESTING_LON, tag='restaurant', limit=4)
         features = nearby_result.get('features')
