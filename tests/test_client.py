@@ -11,7 +11,7 @@ MY_OAUTH_SECRET = 'MY_SECRET_KEY'
 TESTING_LAYER = 'TESTING_LAYER'
 
 if MY_OAUTH_KEY == 'MY_OAUTH_KEY' or \
-    MY_OAUTH_SECRET == 'MY_SERCRET_KEY' or \
+    MY_OAUTH_SECRET == 'MY_SECRET_KEY' or \
     TESTING_LAYER == 'TESTING_LAYER':
     raise Exception('Please provide the proper credentials.')
 
@@ -29,6 +29,7 @@ TESTING_LAT_NON_US = '48.8566667'
 TESTING_LON_NON_US = '2.3509871'
 RECORD_TYPES = ['person', 'place', 'object']
 TESTING_BOUNDS = [-122.43409, 37.747296999999996, -122.424768, 37.751841999999996]
+
 
 class ClientTest(unittest.TestCase):
 
@@ -120,6 +121,22 @@ class ClientTest(unittest.TestCase):
             self.assertEquals(str(point.get('coordinates')[1]), post_records[count].lat)
             count += 1
 
+    def test_nearby_ip_address_search(self):
+        limit = 5
+        records = []
+        for i in range(limit):
+            record = self._record()
+            record.lat = float(39.7437) + (i / 10000000)
+            record.lon = float(-104.9793) - (i / 10000000)
+            records.append(record)
+
+        self.addRecordsAndSleep(TESTING_LAYER, records)
+
+        nearby_result = self.client.get_nearby_ip_address(TESTING_LAYER, TESTING_IP_ADDRESS, limit=limit, radius=10)
+
+        features = nearby_result.get('features')
+        self.assertEquals(len(features), limit)
+
     def test_nearby_geohash_search(self):
         limit = 5
         records = []
@@ -170,11 +187,11 @@ class ClientTest(unittest.TestCase):
         records[0].tags = ['featured']
         self.addRecordsAndSleep(TESTING_LAYER, records)
 
-        nearby_result = self.client.get_nearby(TESTING_LAYER, TESTING_LAT, TESTING_LON, tag='featured')
+        nearby_result = self.client.get_nearby(TESTING_LAYER, TESTING_LAT, TESTING_LON, tag='featured', limit=5)
         features = nearby_result.get('features')
-        self.assertEquals(len(features), 5)
+        self.assertEquals(features, 5)
 
-        nearby_result = self.client.get_nearby(TESTING_LAYER, TESTING_LAT, TESTING_LON, tag='restaurant')
+        nearby_result = self.client.get_nearby(TESTING_LAYER, TESTING_LAT, TESTING_LON, tag='restaurant', limit=4)
         features = nearby_result.get('features')
         self.assertEquals(len(features), 4)
 
@@ -182,6 +199,10 @@ class ClientTest(unittest.TestCase):
         address_result = self.client.get_nearby_address(TESTING_LAT, TESTING_LON)
         self.assertAddressEquals(address_result)
         self.assertRaises(APIError, self.client.get_nearby_address, TESTING_LAT_NON_US, TESTING_LON_NON_US)
+
+    def test_contains_ip_address(self):
+        contains_result = self.client.get_contains_ip_address(TESTING_IP_ADDRESS)
+        self.assertTrue(len(contains_result) == 9)
 
     def test_contains_and_boundary(self):
         contains_result = self.client.get_contains(TESTING_LAT, TESTING_LON)
