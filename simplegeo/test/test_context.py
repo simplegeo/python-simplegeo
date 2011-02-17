@@ -45,7 +45,7 @@ class ContextTest(unittest.TestCase):
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
         self.client.http = mockhttp
 
-        res = self.client.get_context(self.query_lat, self.query_lon)
+        res = self.client.context.get_context(self.query_lat, self.query_lon)
         self.assertEqual(mockhttp.method_calls[0][0], 'request')
         self.assertEqual(mockhttp.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/context/%s,%s.json' % (API_VERSION, self.query_lat, self.query_lon))
         self.assertEqual(mockhttp.method_calls[0][1][1], 'GET')
@@ -62,7 +62,7 @@ class ContextTest(unittest.TestCase):
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
         self.client.http = mockhttp
 
-        self.client.get_context(self.query_lat, self.query_lon)
+        self.client.context.get_context(self.query_lat, self.query_lon)
 
         self.assertEqual(mockhttp.method_calls[0][2]['body'], None)
         self.assertEqual(mockhttp.method_calls[0][2]['headers']['Authorization'], 'OAuth realm="http://api.simplegeo.com", oauth_body_hash="2jmj7l5rSw0yVb%2FvlWAYkK%2FYBwk%3D", oauth_nonce="5", oauth_timestamp="6", oauth_consumer_key="MY_OAUTH_KEY", oauth_signature_method="HMAC-SHA1", oauth_version="1.0", oauth_signature="aCYUTCHSeVlAQiu0CmG2tF71I74%3D"')
@@ -73,7 +73,7 @@ class ContextTest(unittest.TestCase):
         self.client.http = mockhttp
 
         addr = '41 Decatur St, San Francisco, CA'
-        self.client.get_context_by_address(addr)
+        self.client.context.get_context_by_address(addr)
         self.assertEqual(mockhttp.method_calls[0][0], 'request')
         self.assertEqual(mockhttp.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/context/address.json?address=%s' % (API_VERSION, urllib.quote_plus(addr)))
         self.assertEqual(mockhttp.method_calls[0][1][1], 'GET')
@@ -83,7 +83,7 @@ class ContextTest(unittest.TestCase):
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
         self.client.http = mockhttp
 
-        self.client.get_context_by_my_ip()
+        self.client.context.get_context_by_my_ip()
         self.assertEqual(mockhttp.method_calls[0][0], 'request')
         self.assertEqual(mockhttp.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/context/ip.json' % (API_VERSION,))
         self.assertEqual(mockhttp.method_calls[0][1][1], 'GET')
@@ -94,7 +94,7 @@ class ContextTest(unittest.TestCase):
         self.client.http = mockhttp
 
         ipaddr = '192.0.32.10'
-        self.client.get_context_by_ip(ipaddr=ipaddr)
+        self.client.context.get_context_by_ip(ipaddr=ipaddr)
         self.assertEqual(mockhttp.method_calls[0][0], 'request')
         self.assertEqual(mockhttp.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/context/%s.json' % (API_VERSION, ipaddr))
         self.assertEqual(mockhttp.method_calls[0][1][1], 'GET')
@@ -104,22 +104,22 @@ class ContextTest(unittest.TestCase):
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
         self.client.http = mockhttp
 
-        self.failUnlessRaises(AssertionError, self.client.get_context_by_ip, '40.1,127.999')
+        self.failUnlessRaises(AssertionError, self.client.context.get_context_by_ip, '40.1,127.999')
 
     def test_get_context_invalid(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
         self.client.http = mockhttp
 
-        self.failUnlessRaises(AssertionError, self.client.get_context, -91, 100)
-        self.failUnlessRaises(AssertionError, self.client.get_context, -11, 361)
+        self.failUnlessRaises(AssertionError, self.client.context.get_context, -91, 100)
+        self.failUnlessRaises(AssertionError, self.client.context.get_context, -11, 361)
 
     def test_get_context_no_body(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, None)
         self.client.http = mockhttp
 
-        self.failUnlessRaises(DecodeError, self.client.get_context, self.query_lat, self.query_lon)
+        self.failUnlessRaises(DecodeError, self.client.context.get_context, self.query_lat, self.query_lon)
         self.assertEqual(mockhttp.method_calls[0][0], 'request')
         self.assertEqual(mockhttp.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/context/%s,%s.json' % (API_VERSION, self.query_lat, self.query_lon))
         self.assertEqual(mockhttp.method_calls[0][1][1], 'GET')
@@ -130,7 +130,7 @@ class ContextTest(unittest.TestCase):
         self.client.http = mockhttp
 
         try:
-            self.client.get_context(self.query_lat, self.query_lon)
+            self.client.context.get_context(self.query_lat, self.query_lon)
         except DecodeError, e:
             self.failUnlessEqual(e.code,None,repr(e.code))
             self.failUnless("Could not decode" in e.msg, repr(e.msg))
@@ -146,7 +146,7 @@ class ContextTest(unittest.TestCase):
         self.client.http = mockhttp
 
         try:
-            self.client.get_context(self.query_lat, self.query_lon)
+            self.client.context.get_context(self.query_lat, self.query_lon)
         except APIError, e:
             self.failUnlessEqual(e.code, 500, repr(e.code))
             self.failUnlessEqual(e.msg, '{"message": "help my web server is confuzzled"}', (type(e.msg), repr(e.msg)))

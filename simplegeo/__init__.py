@@ -228,19 +228,10 @@ class Client(object):
 
     realm = "http://api.simplegeo.com"
     endpoints = {
+        # Shared
         'feature': 'features/%(simplegeohandle)s.json',
         'annotations': 'features/%(simplegeohandle)s/annotations.json',
-
-        'context': 'context/%(lat)s,%(lon)s.json',
-        'context_by_ip': 'context/%(ip)s.json',
-        'context_by_my_ip': 'context/ip.json',
-        'context_by_address': 'context/address.json?address=%(address)s',
-
-        'create': 'places',
-        'search': 'places/%(lat)s,%(lon)s.json%(quargs)s',
-        'search_by_ip': 'places/%(ipaddr)s.json%(quargs)s',
-        'search_by_my_ip': 'places/ip.json%(quargs)s',
-        'search_by_address': 'places/address.json?%(quargs)s',
+        # More endpoints are added by mixins.
     }
 
     def __init__(self, key, secret, api_version=API_VERSION, host="api.simplegeo.com", port=80):
@@ -254,6 +245,9 @@ class Client(object):
         self.uri = "http://%s:%s" % (host, port)
         self.http = Http()
         self.headers = None
+
+        self.context = ContextClientMixin(self)
+        self.places = PlacesClientMixin(self)
 
     def get_most_recent_http_headers(self):
         """ Intended for debugging -- return the most recent HTTP
@@ -330,21 +324,31 @@ class Client(object):
         return self.headers, content
 
 
-    """CONTEXT"""
+class ContextClientMixin(object):
+
+    def __init__(self, client):
+        self.client = client
+
+        self.client.endpoints.update([
+            # Context
+            ('context', 'context/%(lat)s,%(lon)s.json'),
+            ('context_by_ip', 'context/%(ip)s.json'),
+            ('context_by_my_ip', 'context/ip.json'),
+            ('context_by_address', 'context/address.json?address=%(address)s')])
 
     def get_context(self, lat, lon):
         precondition(is_valid_lat(lat), lat)
         precondition(is_valid_lon(lon), lon)
-        endpoint = self._endpoint('context', lat=lat, lon=lon)
-        return json_decode(self._request(endpoint, "GET")[1])
+        endpoint = self.client._endpoint('context', lat=lat, lon=lon)
+        return json_decode(self.client._request(endpoint, "GET")[1])
 
     def get_context_by_ip(self, ipaddr):
         """ The server uses guesses the latitude and longitude from
         the ipaddr and then does the same thing as get_context(),
         using that guessed latitude and longitude."""
         precondition(is_valid_ip(ipaddr), ipaddr)
-        endpoint = self._endpoint('context_by_ip', ip=ipaddr)
-        return json_decode(self._request(endpoint, "GET")[1])
+        endpoint = self.client._endpoint('context_by_ip', ip=ipaddr)
+        return json_decode(self.client._request(endpoint, "GET")[1])
 
     def get_context_by_my_ip(self):
         """ The server gets the IP address from the HTTP connection
@@ -352,8 +356,8 @@ class Client(object):
         NAT, or HTTP proxy device between you and the server), and
         then does the same thing as get_context_by_ip(), using that IP
         address."""
-        endpoint = self._endpoint('context_by_my_ip')
-        return json_decode(self._request(endpoint, "GET")[1])
+        endpoint = self.client._endpoint('context_by_my_ip')
+        return json_decode(self.client._request(endpoint, "GET")[1])
 
     def get_context_by_address(self, address):
         """
@@ -362,21 +366,34 @@ class Client(object):
         using that deduced latitude and longitude.
         """
         precondition(isinstance(address, basestring), address)
-        endpoint = self._endpoint('context_by_address', address=urllib.quote_plus(address))
-        return json_decode(self._request(endpoint, "GET")[1])
+        endpoint = self.client._endpoint('context_by_address', address=urllib.quote_plus(address))
+        return json_decode(self.client._request(endpoint, "GET")[1])
 
+
+class PlacesClientMixin(object):
+
+    def __init__(self, client):
+        self.client = client
+
+        self.client.endpoints.update([
+            # Places
+            ('create', 'places'),
+            ('search', 'places/%(lat)s,%(lon)s.json%(quargs)s'),
+            ('search_by_ip', 'places/%(ipaddr)s.json%(quargs)s'),
+            ('search_by_my_ip', 'places/ip.json%(quargs)s'),
+            ('search_by_address', 'places/address.json?%(quargs)s')])
 
     """PLACES"""
 
     def add_feature(self, feature):
         """Create a new feature, returns the simplegeohandle. """
-        endpoint = self._endpoint('create')
+        endpoint = self.client._endpoint('create')
         if feature.id:
             # only simplegeohandles or None should be stored in self.id
             assert is_simplegeohandle(feature.id)
             raise ValueError('A feature cannot be added to the Places database when it already has a simplegeohandle: %s' % (feature.id,))
         jsonrec = feature.to_json()
-        resp, content = self._request(endpoint, "POST", jsonrec)
+        resp, content = self.client._request(endpoint, "POST", jsonrec)
         if resp['status'] != "202":
             raise APIError(int(resp['status']), content, resp)
         contentobj = json_decode(content)
@@ -388,14 +405,14 @@ class Client(object):
 
     def update_feature(self, feature):
         """Update a Places feature."""
-        endpoint = self._endpoint('feature', simplegeohandle=feature.id)
-        return self._request(endpoint, 'POST', feature.to_json())[1]
+        endpoint = self.client._endpoint('feature', simplegeohandle=feature.id)
+        return self.client._request(endpoint, 'POST', feature.to_json())[1]
 
     def delete_feature(self, simplegeohandle):
         """Delete a Places feature."""
         precondition(is_simplegeohandle(simplegeohandle), "simplegeohandle is required to match the regex %s" % SIMPLEGEOHANDLE_RSTR, simplegeohandle=simplegeohandle)
-        endpoint = self._endpoint('feature', simplegeohandle=simplegeohandle)
-        return self._request(endpoint, 'DELETE')[1]
+        endpoint = self.client._endpoint('feature', simplegeohandle=simplegeohandle)
+        return self.client._request(endpoint, 'DELETE')[1]
 
     def search(self, lat, lon, radius=None, query=None, category=None):
         """Search for places near a lat/lon, within a radius (in kilometers)."""
@@ -420,9 +437,9 @@ class Client(object):
         quargs = urllib.urlencode(kwargs)
         if quargs:
             quargs = '?'+quargs
-        endpoint = self._endpoint('search', lat=lat, lon=lon, quargs=quargs)
+        endpoint = self.client._endpoint('search', lat=lat, lon=lon, quargs=quargs)
 
-        result = self._request(endpoint, 'GET')[1]
+        result = self.client._request(endpoint, 'GET')[1]
 
         fc = json_decode(result)
         return [Feature.from_dict(f) for f in fc['features']]
@@ -456,9 +473,9 @@ class Client(object):
         quargs = urllib.urlencode(kwargs)
         if quargs:
             quargs = '?'+quargs
-        endpoint = self._endpoint('search_by_ip', ipaddr=ipaddr, quargs=quargs)
+        endpoint = self.client._endpoint('search_by_ip', ipaddr=ipaddr, quargs=quargs)
 
-        result = self._request(endpoint, 'GET')[1]
+        result = self.client._request(endpoint, 'GET')[1]
 
         fc = json_decode(result)
         return [Feature.from_dict(f) for f in fc['features']]
@@ -492,9 +509,9 @@ class Client(object):
         quargs = urllib.urlencode(kwargs)
         if quargs:
             quargs = '?'+quargs
-        endpoint = self._endpoint('search_by_my_ip', quargs=quargs)
+        endpoint = self.client._endpoint('search_by_my_ip', quargs=quargs)
 
-        result = self._request(endpoint, 'GET')[1]
+        result = self.client._request(endpoint, 'GET')[1]
 
         fc = json_decode(result)
         return [Feature.from_dict(f) for f in fc['features']]
@@ -529,9 +546,9 @@ class Client(object):
         if category:
             kwargs['category'] = category
         quargs = urllib.urlencode(kwargs)
-        endpoint = self._endpoint('search_by_address', quargs=quargs)
+        endpoint = self.client._endpoint('search_by_address', quargs=quargs)
 
-        result = self._request(endpoint, 'GET')[1]
+        result = self.client._request(endpoint, 'GET')[1]
 
         fc = json_decode(result)
         return [Feature.from_dict(f) for f in fc['features']]
