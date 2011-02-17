@@ -1,4 +1,5 @@
-import unittest, urllib
+import unittest
+import urllib
 from decimal import Decimal as D
 
 import mock
@@ -16,6 +17,7 @@ API_PORT = 80
 # example: http://api.simplegeo.com/0.1/context/37.797476,-122.424082.json
 
 class ContextTest(unittest.TestCase):
+
     def setUp(self):
         self.client = Client(MY_OAUTH_KEY, MY_OAUTH_SECRET, API_VERSION, API_HOST, API_PORT)
         self.query_lat = D('37.8016')
