@@ -1,20 +1,19 @@
 from _version import __version__
 
-API_VERSION = '1.0'
+API_VERSION = '0.1'
 
 import copy, re
 from decimal import Decimal as D
-
 from httplib2 import Http
 import oauth2 as oauth
 import urllib
-
 import ipaddr
-
 from urlparse import urljoin
 
 from pyutil import jsonutil as json
 from pyutil.assertutil import precondition, _assert
+
+from record import Record
 
 # example: http://api.simplegeo.com/1.0/feature/abcdefghijklmnopqrstuvwyz.json
 
@@ -223,9 +222,6 @@ class Feature:
 
 class Client(object):
 
-
-    """SHARED BETWEEN PRODUCTS"""
-
     realm = "http://api.simplegeo.com"
     endpoints = {
         # Shared
@@ -248,6 +244,7 @@ class Client(object):
 
         self.context = ContextClientMixin(self)
         self.places = PlacesClientMixin(self)
+        self.storage = StorageClientMixin(self)
 
     def get_most_recent_http_headers(self):
         """ Intended for debugging -- return the most recent HTTP
@@ -553,6 +550,69 @@ class PlacesClientMixin(object):
         fc = json_decode(result)
         return [Feature.from_dict(f) for f in fc['features']]
 
+
+class StorageClientMixin(object):
+
+    def __init__(self, client):
+        self.client = client
+
+        self.client.endpoints.update([
+            ('record', 'records/%(layer)s/%(id)s.json'),
+            ('records', 'records/%(layer)s/%(ids)s.json'),
+            ('add_records', 'records/%(layer)s.json'),
+            ('history', 'records/%(layer)s/%(id)s/history.json'),
+            ('nearby', 'records/%(layer)s/nearby/%(arg)s.json'),
+            ('layer', 'layers/%(layer)s.json')])
+
+    def add_record(self, record):
+        if not hasattr(record, 'layer'):
+            raise Exception("Record has no layer.")
+
+        endpoint = self.client._endpoint('record', layer=record.layer, id=record.id)
+        self.client._request(endpoint, "PUT", record.to_json())
+
+    def add_records(self, layer, records):
+        features = {
+            'type': 'FeatureCollection',
+            'features': [record.to_dict() for record in records],
+        }
+        endpoint = self.client._endpoint('add_records', layer=layer)
+        self.client._request(endpoint, "POST", json.dumps(features))
+
+    def delete_record(self, layer, id):
+        endpoint = self.client._endpoint('record', layer=layer, id=id)
+        self.client._request(endpoint, "DELETE")
+
+    def get_record(self, layer, id):
+        endpoint = self.client._endpoint('record', layer=layer, id=id)
+        return self.client._request(endpoint, "GET")
+
+    def get_records(self, layer, ids):
+        endpoint = self.client._endpoint('records', layer=layer, ids=','.join(ids))
+        features = self.client._request(endpoint, "GET")
+        return features.get('features') or []
+
+    def get_history(self, layer, id, **kwargs):
+        endpoint = self.client._endpoint('history', layer=layer, id=id)
+        return self.client._request(endpoint, "GET", data=kwargs)
+
+    def get_nearby(self, layer, lat, lon, **kwargs):
+        quargs = urllib.urlencode(kwargs)
+        if quargs:
+            quargs = '?'+quargs
+        endpoint = self.client._endpoint('nearby', layer=layer, arg='%s,%s' % (lat, lon))
+        result = self.client._request(endpoint, "GET", data=quargs)[1]
+        return json_decode(result)
+
+    def get_layer(self, layer):
+        endpoint = self.client._endpoint('layer', layer=layer)
+        return self.client._request(endpoint, "GET")
+
+    """ Waiting on Gate
+    def get_nearby_ip_address(self, layer, ip_address, **kwargs):
+        endpoint = self.client._endpoint('nearby', layer=layer, arg=ip_address)
+        return self.client._request(endpoint, "GET", data=kwargs)
+    """
 
 class APIError(Exception):
     """Base exception for all API errors."""
