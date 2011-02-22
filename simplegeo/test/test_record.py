@@ -1,6 +1,7 @@
 import unittest
 import re
-from simplegeo import Feature, deep_swap
+from simplegeo.models import Feature
+from simplegeo.util import deep_swap
 from decimal import Decimal as D
 
 class FeatureTest(unittest.TestCase):

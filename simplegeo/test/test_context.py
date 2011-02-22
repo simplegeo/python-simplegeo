@@ -4,7 +4,9 @@ from decimal import Decimal as D
 
 import mock
 
-from simplegeo import Client, APIError, DecodeError, Feature
+from simplegeo import Client
+from simplegeo.models import Feature
+from simplegeo.util import APIError, DecodeError
 
 MY_OAUTH_KEY = 'MY_OAUTH_KEY'
 MY_OAUTH_SECRET = 'MY_SECRET_KEY'

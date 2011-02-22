@@ -4,7 +4,9 @@ from decimal import Decimal as D
 from pyutil import jsonutil as json
 import mock
 
-from simplegeo import Client, APIError, DecodeError, Feature, is_valid_lat, is_valid_lon, is_valid_ip, to_unicode
+from simplegeo import Client
+from simplegeo.models import Feature
+from simplegeo.util import APIError, DecodeError, is_valid_lat, is_valid_lon, is_valid_ip, to_unicode
 
 MY_OAUTH_KEY = 'MY_OAUTH_KEY'
 MY_OAUTH_SECRET = 'MY_SECRET_KEY'
