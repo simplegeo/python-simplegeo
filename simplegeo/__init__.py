@@ -1,6 +1,6 @@
 from _version import __version__
 
-API_VERSION = '1.0'
+API_VERSION = '0.1'
 
 import copy, re
 from decimal import Decimal as D
