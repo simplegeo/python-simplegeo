@@ -274,7 +274,7 @@ class Client(object):
         if not is_simplegeohandle(simplegeohandle):
             raise TypeError("simplegeohandle is required to match the regex %s, but it was %s :: %r" % (SIMPLEGEOHANDLE_RSTR, type(simplegeohandle), simplegeohandle))
         endpoint = self._endpoint('annotations', simplegeohandle=simplegeohandle)
-        return json.loads(self._request(endpoint, 'GET')[1])
+        return json_decode(self._request(endpoint, 'GET')[1])
 
     def annotate(self, simplegeohandle, annotations, private):
         if not isinstance(annotations, dict):
@@ -291,7 +291,7 @@ class Client(object):
                 'private': private}
 
         endpoint = self._endpoint('annotations', simplegeohandle=simplegeohandle)
-        return json.loads(self._request(endpoint,
+        return json_decode(self._request(endpoint,
                                         'POST',
                                         data=json.dumps(data))[1])
 
@@ -585,28 +585,30 @@ class StorageClientMixin(object):
 
     def get_record(self, layer, id):
         endpoint = self.client._endpoint('record', layer=layer, id=id)
-        return self.client._request(endpoint, "GET")
+        return json_decode(self.client._request(endpoint, "GET")[1])
 
     def get_records(self, layer, ids):
         endpoint = self.client._endpoint('records', layer=layer, ids=','.join(ids))
-        features = self.client._request(endpoint, "GET")
+        features = json_decode(self.client._request(endpoint, "GET")[1])
         return features.get('features') or []
 
     def get_history(self, layer, id, **kwargs):
+        quargs = urllib.urlencode(kwargs)
+        if quargs:
+                quargs = '?'+quargs
         endpoint = self.client._endpoint('history', layer=layer, id=id)
-        return self.client._request(endpoint, "GET", data=kwargs)
+        return json_decode(self.client._request(endpoint, "GET", data=quargs)[1])
 
     def get_nearby(self, layer, lat, lon, **kwargs):
         quargs = urllib.urlencode(kwargs)
         if quargs:
             quargs = '?'+quargs
         endpoint = self.client._endpoint('nearby', layer=layer, arg='%s,%s' % (lat, lon))
-        result = self.client._request(endpoint, "GET", data=quargs)[1]
-        return json_decode(result)
+        return json_decode(self.client._request(endpoint, "GET", data=quargs)[1])
 
     def get_layer(self, layer):
         endpoint = self.client._endpoint('layer', layer=layer)
-        return self.client._request(endpoint, "GET")
+        return json_decode(self.client._request(endpoint, "GET")[1])
 
     """ Waiting on Gate
     def get_nearby_ip_address(self, layer, ip_address, **kwargs):
