@@ -170,20 +170,22 @@ class Record(object):
     def __eq__(self, other):
         return isinstance(other, self.__class__) and self.id == other.id
 
-
 class Layer(object):
-    def __init__(self, name, title, description, public):
+    def __init__(self, name, title='', description='', public=False,
+                 callback_urls=[]):
         self.name = name
         self.title = title
         self.description = description
         self.public = public
+        self.callback_urls = callback_urls
 
     @classmethod
     def from_dict(cls, data):
         if not data:
             return None
-        layer = cls(data['name'], data['title'],
-                    data['description'], data['public'])
+        layer = cls(data.get('name'), data.get('title'),
+                    data.get('description'), data.get('public'),
+                    data.get('callback_urls'))
         return layer
 
     def to_dict(self):
@@ -192,6 +194,7 @@ class Layer(object):
             'title': self.title,
             'description': self.description,
             'public': self.public,
+            'callback_urls': self.callback_urls,
         }
 
     def to_json(self):

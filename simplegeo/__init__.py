@@ -1,5 +1,4 @@
 from _version import __version__
-API_VERSION = '0.1'
 
 import pkg_resources
 pkg_resources.declare_namespace(__name__)
@@ -22,18 +21,17 @@ class Client(object):
     realm = "http://api.simplegeo.com"
     endpoints = {
         # Shared
-        'feature': 'features/%(simplegeohandle)s.json',
-        'annotations': 'features/%(simplegeohandle)s/annotations.json',
+        'feature': '1.0/features/%(simplegeohandle)s.json',
+        'annotations': '1.0/features/%(simplegeohandle)s/annotations.json',
         # More endpoints are added by mixins.
     }
 
-    def __init__(self, key, secret, api_version=API_VERSION, host="api.simplegeo.com", port=80):
+    def __init__(self, key, secret, host="api.simplegeo.com", port=80):
         self.host = host
         self.port = port
         self.consumer = oauth.Consumer(key, secret)
         self.key = key
         self.secret = secret
-        self.api_version = api_version
         self.signature = oauth.SignatureMethod_HMAC_SHA1()
         self.uri = "http://%s:%s" % (host, port)
         self.http = Http()
@@ -58,7 +56,7 @@ class Client(object):
             endpoint = endpoint % kwargs
         except KeyError, e:
             raise TypeError('Missing required argument "%s"' % (e.args[0],))
-        return urljoin(urljoin(self.uri, self.api_version + '/'), endpoint)
+        return urljoin(urljoin(self.uri, '/'), endpoint)
 
     def get_feature(self, simplegeohandle):
         """Return the GeoJSON representation of a feature."""
@@ -125,10 +123,10 @@ class ContextClientMixin(object):
 
         self.client.endpoints.update([
             # Context
-            ('context', 'context/%(lat)s,%(lon)s.json'),
-            ('context_by_ip', 'context/%(ip)s.json'),
-            ('context_by_my_ip', 'context/ip.json'),
-            ('context_by_address', 'context/address.json?address=%(address)s')])
+            ('context', '1.0/context/%(lat)s,%(lon)s.json'),
+            ('context_by_ip', '1.0/context/%(ip)s.json'),
+            ('context_by_my_ip', '1.0/context/ip.json'),
+            ('context_by_address', '1.0/context/address.json?address=%(address)s')])
 
     def get_context(self, lat, lon):
         precondition(is_valid_lat(lat), lat)
@@ -151,6 +149,7 @@ class ContextClientMixin(object):
         then does the same thing as get_context_by_ip(), using that IP
         address."""
         endpoint = self.client._endpoint('context_by_my_ip')
+        print endpoint
         return json_decode(self.client._request(endpoint, "GET")[1])
 
     def get_context_by_address(self, address):
@@ -171,11 +170,11 @@ class PlacesClientMixin(object):
 
         self.client.endpoints.update([
             # Places
-            ('create', 'places'),
-            ('search', 'places/%(lat)s,%(lon)s.json%(quargs)s'),
-            ('search_by_ip', 'places/%(ipaddr)s.json%(quargs)s'),
-            ('search_by_my_ip', 'places/ip.json%(quargs)s'),
-            ('search_by_address', 'places/address.json?%(quargs)s')])
+            ('create', '1.0/places'),
+            ('search', '1.0/places/%(lat)s,%(lon)s.json%(quargs)s'),
+            ('search_by_ip', '1.0/places/%(ipaddr)s.json%(quargs)s'),
+            ('search_by_my_ip', '1.0/places/ip.json%(quargs)s'),
+            ('search_by_address', '1.0/places/address.json?%(quargs)s')])
 
     """PLACES"""
 
@@ -354,12 +353,13 @@ class StorageClientMixin(object):
         self.client = client
 
         self.client.endpoints.update([
-            ('record', 'records/%(layer)s/%(id)s.json'),
-            ('records', 'records/%(layer)s/%(ids)s.json'),
-            ('add_records', 'records/%(layer)s.json'),
-            ('history', 'records/%(layer)s/%(id)s/history.json'),
-            ('nearby', 'records/%(layer)s/nearby/%(arg)s.json'),
-            ('layer', 'layers/%(layer)s.json')])
+            ('record', '0.1/records/%(layer)s/%(id)s.json'),
+            ('records', '0.1/records/%(layer)s/%(ids)s.json'),
+            ('add_records', '0.1/records/%(layer)s.json'),
+            ('history', '0.1/records/%(layer)s/%(id)s/history.json'),
+            ('nearby', '0.1/records/%(layer)s/nearby/%(arg)s.json'),
+            ('layer', '0.1/layers/%(layer)s.json'),
+            ('layers', '0.1/layers.json')])
 
     def add_record(self, record):
         if not hasattr(record, 'layer'):
@@ -412,3 +412,24 @@ class StorageClientMixin(object):
         endpoint = self.client._endpoint('nearby', layer=layer, arg=ip_address)
         return self.client._request(endpoint, "GET", data=kwargs)
     """
+
+    """Pre-release layer management methods."""
+
+    def create_layer(self, layer):
+        endpoint = self.client._endpoint('layer', layer=layer.name)
+        return json_decode(self.client._request(endpoint, "PUT", layer.to_json())[1])
+
+    def update_layer(self, layer):
+        return self.create_layer(layer)
+
+    def delete_layer(self, name):
+        endpoint = self.client._endpoint('layer', layer=name)
+        return json_decode(self.client._request(endpoint, "DELETE")[1])
+
+    def get_layer(self, name):
+        endpoint = self.client._endpoint('layer', layer=name)
+        return json_decode(self.client._request(endpoint, "GET")[1])
+
+    def get_layers(self):
+        endpoint = self.client._endpoint('layers')
+        return json_decode(self.client._request(endpoint, "GET")[1])
