@@ -21,7 +21,7 @@ API_PORT = 80
 class ContextTest(unittest.TestCase):
 
     def setUp(self):
-        self.client = Client(MY_OAUTH_KEY, MY_OAUTH_SECRET, API_VERSION, API_HOST, API_PORT)
+        self.client = Client(MY_OAUTH_KEY, MY_OAUTH_SECRET, API_HOST, API_PORT)
         self.query_lat = D('37.8016')
         self.query_lon = D('-122.4783')
 

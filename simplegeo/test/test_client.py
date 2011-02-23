@@ -80,7 +80,7 @@ class DecodeErrorTest(unittest.TestCase):
 
 class ClientTest(unittest.TestCase):
     def setUp(self):
-        self.client = Client(MY_OAUTH_KEY, MY_OAUTH_SECRET, API_VERSION, API_HOST, API_PORT)
+        self.client = Client(MY_OAUTH_KEY, MY_OAUTH_SECRET, API_HOST, API_PORT)
         self.query_lat = D('37.8016')
         self.query_lon = D('-122.4783')
 
@@ -216,7 +216,7 @@ EXAMPLE_BODY="""
 class TestAnnotations(unittest.TestCase):
 
     def setUp(self):
-        self.client = Client(MY_OAUTH_KEY, MY_OAUTH_SECRET, API_VERSION, API_HOST, API_PORT)
+        self.client = Client(MY_OAUTH_KEY, MY_OAUTH_SECRET, API_HOST, API_PORT)
         self.handle = 'SG_4H2GqJDZrc0ZAjKGR8qM4D'
 
     def test_get_annotations(self):
