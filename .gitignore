@@ -31,3 +31,6 @@ share
 \#*\#
 /.emacs.desktop
 /.emacs.desktop.lock
+
+# vi
+*.swp
