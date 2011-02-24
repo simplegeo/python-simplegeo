@@ -1,0 +1,12 @@
+Source: python-simplegeo
+Section: python
+Priority: extra
+Maintainer: SimpleGeo Nerds <nerds@simplegeo.com>
+Build-Depends: debhelper (>= 7), cdbs (>= 0.4.59), python (>= 2.6), python-support (>= 1.0.4), python-setuptools (>= 0.6.10), python-coverage (>= 2.85-1), python-mock, python-pyutil (>= 1.8.1), pyflakes (>= 0.4)
+Standards-Version: 3.8.4
+Homepage: http://github.com/simplegeo/python-simplegeo-places/
+
+Package: python-simplegeo
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends}, python-pyutil (>= 1.8.1)
+Description: Python library for the SimpleGeo API.
