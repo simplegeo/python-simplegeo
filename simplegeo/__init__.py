@@ -403,10 +403,6 @@ class StorageClientMixin(object):
         endpoint = self.client._endpoint('nearby', layer=layer, arg='%s,%s' % (lat, lon))
         return json_decode(self.client._request(endpoint, "GET", data=quargs)[1])
 
-    def get_layer(self, layer):
-        endpoint = self.client._endpoint('layer', layer=layer)
-        return json_decode(self.client._request(endpoint, "GET")[1])
-
     """ Waiting on Gate
     def get_nearby_ip_address(self, layer, ip_address, **kwargs):
         endpoint = self.client._endpoint('nearby', layer=layer, arg=ip_address)
