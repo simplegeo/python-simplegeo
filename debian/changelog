@@ -1,3 +1,12 @@
+python-simplegeo (3.0.5) lucid; urgency=low
+
+  [ Ben Standefer ]
+  * Add consumption test for Context.
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Fri, 25 Feb 2011 01:52:01 +0000
+
 python-simplegeo (3.0.4) lucid; urgency=low
 
   [ Ben Standefer ]
