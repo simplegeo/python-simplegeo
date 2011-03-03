@@ -10,7 +10,7 @@ include /usr/share/cdbs/1/class/python-distutils.mk
 # Add here any variable or target overrides you need.
 
 install/python-simplegeo::
-	pyflakes simplegeo
+	#pyflakes simplegeo
 	python-coverage run --branch --include=simplegeo/* setup.py test -s simplegeo.test
 	python-coverage html -d $(ARTIFACTS)/htmlcov
 

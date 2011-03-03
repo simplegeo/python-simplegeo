@@ -35,8 +35,8 @@ dev: env
 
 	@echo "        ==============================================================="
 
-#lint flakes:
-#	$(SETUP) flakes
+lint flakes:
+	$(SETUP) flakes
 
 coverage: .coverage
 	@$(COVERAGE) html -d $@ $(COVERED)
