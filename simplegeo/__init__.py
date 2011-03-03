@@ -13,6 +13,9 @@ from simplegeo.util import json_decode, APIError, SIMPLEGEOHANDLE_RSTR, is_simpl
 from simplegeo.util import DecodeError
 from simplegeo.models import Record
 
+# This is arbitrary for now.  Storage URLs are still /0.1/.  Left this in the constructors for future use.
+API_VERSION = '1.0'
+
 class Client(object):
 
     realm = "http://api.simplegeo.com"
@@ -23,7 +26,7 @@ class Client(object):
         # More endpoints are added by mixins.
     }
 
-    def __init__(self, key, secret, host="api.simplegeo.com", port=80):
+    def __init__(self, key, secret, api_version=API_VERSION, host="api.simplegeo.com", port=80):
         self.host = host
         self.port = port
         self.consumer = oauth.Consumer(key, secret)

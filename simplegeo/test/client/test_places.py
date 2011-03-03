@@ -22,7 +22,7 @@ API_PORT = 80
 class PlacesTest(unittest.TestCase):
 
     def setUp(self):
-        self.client = Client(MY_OAUTH_KEY, MY_OAUTH_SECRET, API_HOST, API_PORT)
+        self.client = Client(MY_OAUTH_KEY, MY_OAUTH_SECRET, host=API_HOST, port=API_PORT)
 
     def test_wrong_endpoint(self):
         self.assertRaises(Exception, self.client._endpoint, 'featuret')
