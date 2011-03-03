@@ -54,7 +54,6 @@ setup(name=PKG,
       install_requires=['httplib2>=0.6.0', 'oauth2>=1.5', 'pyutil[jsonutil] >= 1.8.1', 'ipaddr >= 2.0.0'],
       keywords="simplegeo",
       zip_safe=False, # actually it is zip safe, but zipping packages doesn't help with anything and can cause some problems (http://bugs.python.org/setuptools/issue33 )
-      namespace_packages = ['simplegeo'],
       test_suite='simplegeo.test',
       setup_requires=setup_requires,
       tests_require=tests_require)
