@@ -54,7 +54,7 @@ class PlacesTest(unittest.TestCase):
             return ({'status': '202', 'content-type': 'application/json', 'location': newloc}, json.dumps({'id': handle}))
 
         mockhttp.request = mockrequest
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         feature = Feature(
             coordinates=(D('37.8016'), D('-122.4783'))
@@ -87,7 +87,7 @@ class PlacesTest(unittest.TestCase):
             return ({'status': '202', 'content-type': 'application/json', 'location': newloc}, json.dumps({'id': handle}))
 
         mockhttp.request = mockrequest
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         feature = Feature(
             coordinates=(D('37.8016'), D('-122.4783'))
@@ -117,7 +117,7 @@ class PlacesTest(unittest.TestCase):
             return ({'status': '202', 'content-type': 'application/json', 'location': newloc}, json.dumps({'id': handle}))
 
         mockhttp.request = mockrequest
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         feature = Feature(
             coordinates=(D('37.8016'), D('-122.4783'))
@@ -169,7 +169,7 @@ class PlacesTest(unittest.TestCase):
             return ({'status': '202', 'content-type': 'application/json', 'location': newloc}, json.dumps({'id': handle}))
 
         mockhttp.request = mockrequest
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         feature = Feature(
             properties={'record_id': record_id},
@@ -185,9 +185,9 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, resultfeature.to_json())
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
-        res = self.client.get_feature(handle)
+        res = self.client.places.get_feature(handle)
         self.assertEqual(mockhttp.method_calls[0][0], 'request')
         self.assertEqual(mockhttp.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/features/%s.json' % (API_VERSION, handle))
         self.assertEqual(mockhttp.method_calls[0][1][1], 'GET')
@@ -200,9 +200,9 @@ class PlacesTest(unittest.TestCase):
     def test_empty_body(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, None)
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
-        self.client._request("http://anyrandomendpoint", 'POST')
+        self.client.places._request("http://anyrandomendpoint", 'POST')
 
         self.failUnless(mockhttp.method_calls[0][2]['body'] is None, (repr(mockhttp.method_calls[0][2]['body']), type(mockhttp.method_calls[0][2]['body'])))
 
@@ -212,8 +212,8 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, '{ "Hello": "I am a string. \xe2\x9d\xa4" }'.decode('utf-8'))
-        self.client.http = mockhttp
-        res = self.client._request("http://thing", 'POST')[1]
+        self.client.places.http = mockhttp
+        res = self.client.places._request("http://thing", 'POST')[1]
         self.failUnlessEqual(res, '{ "Hello": "I am a string. \xe2\x9d\xa4" }'.decode('utf-8'))
 
     def test_dont_Featureify_results(self):
@@ -225,8 +225,8 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_RECORD_JSONSTR)
-        self.client.http = mockhttp
-        res = self.client._request("http://thing", 'POST')[1]
+        self.client.places.http = mockhttp
+        res = self.client.places._request("http://thing", 'POST')[1]
         self.failUnlessEqual(res, EXAMPLE_RECORD_JSONSTR)
 
     def test_update_feature(self):
@@ -235,7 +235,7 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, {'token': "this is your polling token"})
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         res = self.client.places.update_feature(rec)
         self.failUnless(isinstance(res, dict), res)
@@ -257,7 +257,7 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, "whatever the response body is")
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         res = self.client.places.delete_feature(handle)
         self.failUnlessEqual(res, "whatever the response body is")
@@ -272,7 +272,7 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': [rec1.to_dict(), rec2.to_dict()]}))
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         self.failUnlessRaises(AssertionError, self.client.places.search, -91, 100)
         self.failUnlessRaises(AssertionError, self.client.places.search, -81, 361)
@@ -295,7 +295,7 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': [rec1.to_dict(), rec2.to_dict()]}))
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         self.failUnlessRaises(AssertionError, self.client.places.search, -91, 100)
         self.failUnlessRaises(AssertionError, self.client.places.search, -81, 361)
@@ -316,7 +316,7 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': [rec1.to_dict(), rec2.to_dict()]}))
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         self.failUnlessRaises(AssertionError, self.client.places.search_by_ip, 'this is not an IP address at all, silly')
         self.failUnlessRaises(AssertionError, self.client.places.search_by_ip, -81, 181) # Someone accidentally passed lat, lon to search_by_ip().
@@ -349,7 +349,7 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': [rec1.to_dict(), rec2.to_dict()]}))
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         self.failUnlessRaises(AssertionError, self.client.places.search_by_ip, 'this is not an IP address at all, silly')
         self.failUnlessRaises(AssertionError, self.client.places.search_by_ip, -81, 181) # Someone accidentally passed lat, lon to search_by_ip().
@@ -370,7 +370,7 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': [rec1.to_dict(), rec2.to_dict()]}))
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         ipaddr = '192.0.32.10'
         self.failUnlessRaises(AssertionError, self.client.places.search_by_my_ip, ipaddr) # Someone accidentally passed an ip addr to search_by_my_ip().
@@ -401,7 +401,7 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': [rec1.to_dict(), rec2.to_dict()]}))
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         ipaddr = '192.0.32.10'
         self.failUnlessRaises(AssertionError, self.client.places.search_by_my_ip, ipaddr) # Someone accidentally passed an ip addr to search_by_my_ip().
@@ -420,7 +420,7 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': [rec1.to_dict(), rec2.to_dict()]}))
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         lat = D('11.03')
         lon = D('10.04')
@@ -456,7 +456,7 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': [rec1.to_dict(), rec2.to_dict()]}))
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         lat = D('11.03')
         lon = D('10.04')
@@ -474,7 +474,7 @@ class PlacesTest(unittest.TestCase):
     def test_radius_search(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': []}))
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         lat = D('11.03')
         lon = D('10.04')
@@ -490,7 +490,7 @@ class PlacesTest(unittest.TestCase):
     def test_radius_search_by_ip(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': []}))
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         ipaddr = '192.0.32.10'
         radius = D('0.01')
@@ -505,7 +505,7 @@ class PlacesTest(unittest.TestCase):
     def test_radius_search_by_my_ip(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': []}))
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         ipaddr = '192.0.32.10'
         radius = D('0.01')
@@ -522,7 +522,7 @@ class PlacesTest(unittest.TestCase):
     def test_radius_search_by_address(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': []}))
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         lat = D('11.03')
         lon = D('10.04')
@@ -544,7 +544,7 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': [rec1.to_dict(), rec2.to_dict()]}))
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         lat = D('11.03')
         lon = D('10.04')
@@ -562,7 +562,7 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': [rec1.to_dict(), rec2.to_dict()]}))
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         ipaddr = '192.0.32.10'
         res = self.client.places.search_by_ip(ipaddr)
@@ -579,7 +579,7 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': [rec1.to_dict(), rec2.to_dict()]}))
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         ipaddr = '192.0.32.10'
         self.failUnlessRaises(AssertionError, self.client.places.search_by_my_ip, ipaddr) # Someone accidentally passed an ip addr to search_by_my_ip().
@@ -597,7 +597,7 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': [rec1.to_dict(), rec2.to_dict()]}))
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         lat = D('11.03')
         lon = D('10.04')
@@ -617,10 +617,10 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, 'some crap')
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         try:
-            self.client.get_feature(handle)
+            self.client.places.get_feature(handle)
         except DecodeError, e:
             self.failUnlessEqual(e.code,None,repr(e.code))
             self.failUnless("Could not decode JSON" in e.msg, repr(e.msg))
@@ -642,10 +642,10 @@ class PlacesTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '500', 'content-type': 'application/json', }, '{"message": "help my web server is confuzzled"}')
-        self.client.http = mockhttp
+        self.client.places.http = mockhttp
 
         try:
-            self.client.get_feature(handle)
+            self.client.places.get_feature(handle)
         except APIError, e:
             self.failUnlessEqual(e.code, 500, repr(e.code))
             self.failUnlessEqual(e.msg, '{"message": "help my web server is confuzzled"}', (type(e.msg), repr(e.msg)))

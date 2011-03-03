@@ -45,7 +45,7 @@ class ContextTest(unittest.TestCase):
     def test_get_context(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
-        self.client.http = mockhttp
+        self.client.context.http = mockhttp
 
         res = self.client.context.get_context(self.query_lat, self.query_lon)
         self.assertEqual(mockhttp.method_calls[0][0], 'request')
@@ -62,7 +62,7 @@ class ContextTest(unittest.TestCase):
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
-        self.client.http = mockhttp
+        self.client.context.http = mockhttp
 
         self.client.context.get_context(self.query_lat, self.query_lon)
 
@@ -72,7 +72,7 @@ class ContextTest(unittest.TestCase):
     def test_get_context_by_address(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
-        self.client.http = mockhttp
+        self.client.context.http = mockhttp
 
         addr = '41 Decatur St, San Francisco, CA'
         self.client.context.get_context_by_address(addr)
@@ -83,7 +83,7 @@ class ContextTest(unittest.TestCase):
     def test_get_context_by_my_ip(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
-        self.client.http = mockhttp
+        self.client.context.http = mockhttp
 
         self.client.context.get_context_by_my_ip()
         self.assertEqual(mockhttp.method_calls[0][0], 'request')
@@ -93,7 +93,7 @@ class ContextTest(unittest.TestCase):
     def test_get_context_by_ip(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
-        self.client.http = mockhttp
+        self.client.context.http = mockhttp
 
         ipaddr = '192.0.32.10'
         self.client.context.get_context_by_ip(ipaddr=ipaddr)
@@ -104,14 +104,14 @@ class ContextTest(unittest.TestCase):
     def test_get_context_by_ip_invalid(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
-        self.client.http = mockhttp
+        self.client.context.http = mockhttp
 
         self.failUnlessRaises(AssertionError, self.client.context.get_context_by_ip, '40.1,127.999')
 
     def test_get_context_invalid(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
-        self.client.http = mockhttp
+        self.client.context.http = mockhttp
 
         self.failUnlessRaises(AssertionError, self.client.context.get_context, -91, 100)
         self.failUnlessRaises(AssertionError, self.client.context.get_context, -11, 361)
@@ -119,7 +119,7 @@ class ContextTest(unittest.TestCase):
     def test_get_context_no_body(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, None)
-        self.client.http = mockhttp
+        self.client.context.http = mockhttp
 
         self.failUnlessRaises(DecodeError, self.client.context.get_context, self.query_lat, self.query_lon)
         self.assertEqual(mockhttp.method_calls[0][0], 'request')
@@ -129,7 +129,7 @@ class ContextTest(unittest.TestCase):
     def test_get_context_bad_json(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY + 'some crap')
-        self.client.http = mockhttp
+        self.client.context.http = mockhttp
 
         try:
             self.client.context.get_context(self.query_lat, self.query_lon)
@@ -145,7 +145,7 @@ class ContextTest(unittest.TestCase):
     def test_get_context_error(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '500', 'content-type': 'application/json', }, '{"message": "help my web server is confuzzled"}')
-        self.client.http = mockhttp
+        self.client.context.http = mockhttp
 
         try:
             self.client.context.get_context(self.query_lat, self.query_lon)
