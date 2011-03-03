@@ -8,5 +8,5 @@ Homepage: http://github.com/simplegeo/python-simplegeo-places/
 
 Package: python-simplegeo
 Architecture: all
-Depends: ${misc:Depends}, ${python:Depends}, python-pyutil (>= 1.8.1), python-oauth2 (>=1.5)
+Depends: ${misc:Depends}, ${python:Depends}, python-pyutil (>= 1.8.1), python-oauth2 (>= 1.5), python-ipaddr (>= 2.0.0), python-httplib2 (>= 0.6.0)
 Description: Python library for the SimpleGeo API.
