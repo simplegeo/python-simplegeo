@@ -15,6 +15,9 @@ from pyutil.assertutil import precondition
 from simplegeo.models import Feature
 from simplegeo.util import json_decode, APIError, is_numeric, is_valid_lat, is_valid_lon, SIMPLEGEOHANDLE_RSTR, is_simplegeohandle, to_unicode, is_valid_ip
 
+# Unused import for backwards compatibility.
+from simplegeo.util import DecodeError
+from simplegeo.models import Record
 
 class Client(object):
 
