@@ -1,8 +1,5 @@
 from _version import __version__
 
-import pkg_resources
-pkg_resources.declare_namespace(__name__)
-
 from urlparse import urljoin
 
 from httplib2 import Http
