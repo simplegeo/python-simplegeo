@@ -9,17 +9,13 @@ from simplegeo import Client
 from simplegeo.models import Record, Layer
 from simplegeo.util import APIError
 
+import config
 
-MY_OAUTH_KEY = 'MY_OAUTH_KEY'
-MY_OAUTH_SECRET = 'MY_SECRET_KEY'
-
-if MY_OAUTH_KEY == 'MY_OAUTH_KEY' or \
-    MY_OAUTH_SECRET == 'MY_SECRET_KEY':
-    raise Exception('Please provide the proper credentials.')
+if config.MY_OAUTH_KEY == 'MY_OAUTH_KEY' or \
+    config.MY_OAUTH_SECRET == 'MY_SECRET_KEY':
+    raise Exception('Please provide the proper credentials in config.py.')
 
 API_VERSION = '0.1'
-API_HOST = 'api.simplegeo.com'
-API_PORT = 80
 
 TESTING_LAT = '37.7481624945'
 TESTING_LON = '-122.433287165'
@@ -43,12 +39,12 @@ class ClientTest(unittest.TestCase):
         self._delete_test_layer()
 
     def setUp(self):
-        self.client = Client(MY_OAUTH_KEY, MY_OAUTH_SECRET, API_HOST, API_PORT)
+        self.client = Client(config.MY_OAUTH_KEY, config.MY_OAUTH_SECRET, config.API_HOST, config.API_PORT)
         self.created_records = []
         self._create_test_layer()
 
     def _create_test_layer(self):
-        self.layer = Layer('test_layer_' + MY_OAUTH_KEY,
+        self.layer = Layer('test_layer_' + config.MY_OAUTH_KEY,
                            'Layer for Tests', 'Layer for \
                             Tests', False, ['http://simplegeo.com',
                             'http://example.com'])
