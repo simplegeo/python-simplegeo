@@ -17,6 +17,7 @@ from simplegeo.models import Record
 # This is arbitrary for now.  Storage URLs are still /0.1/.  Left this in the constructors for future use.
 API_VERSION = '1.0'
 
+
 class Client(object):
 
     realm = "http://api.simplegeo.com"
@@ -38,12 +39,19 @@ class Client(object):
         self.http = Http()
         self.headers = None
 
+        self.subclient = getattr(self, 'subclient', False)
+
         # Do not create recursive subclients.
         # Only create subclients if we are running __init__() from Client.
-        if not getattr(self, 'subclient', None):
+        if not self.subclient:
             self.context = ContextClient(key, secret, host=host, port=port)
             self.places = PlacesClient(key, secret, host=host, port=port)
             self.storage = StorageClient(key, secret, host=host, port=port)
+
+    # For backwards compatibility with the old Storage client.
+    def __getattr__(self, name):
+        if name not in ['storage']:
+            return getattr(self.storage, name)
 
     def get_most_recent_http_headers(self):
         """ Intended for debugging -- return the most recent HTTP
