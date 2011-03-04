@@ -9,9 +9,6 @@ from pyutil import jsonutil as json
 from simplegeo.models import Feature
 from simplegeo.util import json_decode, APIError, SIMPLEGEOHANDLE_RSTR, is_simplegeohandle, to_unicode
 
-# Unused import for backwards compatibility.
-from simplegeo.util import DecodeError
-from simplegeo.models import Record
 
 # This is arbitrary for now.  Storage URLs are still /0.1/.  Left this in the constructors for future use.
 API_VERSION = '1.0'
