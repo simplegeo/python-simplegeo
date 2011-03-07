@@ -69,7 +69,7 @@ class Client(ParentClient):
         return self._request(endpoint, "GET", data=kwargs)
     """
 
-    """Pre-release layer management methods."""
+    """Layer management methods."""
 
     def create_layer(self, layer):
         endpoint = self._endpoint('layer', layer=layer.name)
