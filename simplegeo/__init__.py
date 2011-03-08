@@ -111,7 +111,7 @@ class Client(object):
         """
         body = None
         params = {}
-        if method == 'GET' and isinstance(data, dict):
+        if method == 'GET' and isinstance(data, dict) and len(data) > 0:
             endpoint = endpoint + '?' + urllib.urlencode(data)
         else:
             if isinstance(data, dict):

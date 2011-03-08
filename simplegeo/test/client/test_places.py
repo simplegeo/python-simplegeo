@@ -194,9 +194,6 @@ class PlacesTest(unittest.TestCase):
         self.failUnless(isinstance(res, Feature), res)
         self.assertEqual(res.to_json(), resultfeature.to_json())
 
-    def test_type_check_request(self):
-        self.failUnlessRaises(TypeError, self.client._request, 'whatever', 'POST', {'bogus': "non string"})
-
     def test_empty_body(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, None)
