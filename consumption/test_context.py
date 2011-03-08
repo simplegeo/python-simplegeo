@@ -17,7 +17,7 @@ def random_lat_lon():
 
 class ConsumptionTest(unittest.TestCase):
     def setUp(self):
-        self.client = Client(config.MY_OAUTH_KEY, config.MY_OAUTH_SECRET, config.API_HOST, config.API_PORT)
+        self.client = Client(config.MY_OAUTH_KEY, config.MY_OAUTH_SECRET, host=config.API_HOST, port=config.API_PORT)
         self.known_points = {
             'darrell_k_royal_stadium': {
                 'lat': 30.283863,

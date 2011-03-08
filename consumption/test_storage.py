@@ -39,17 +39,17 @@ class ClientTest(unittest.TestCase):
         self._delete_test_layer()
 
     def setUp(self):
-        self.client = Client(config.MY_OAUTH_KEY, config.MY_OAUTH_SECRET, config.API_HOST, config.API_PORT)
+        self.client = Client(config.MY_OAUTH_KEY, config.MY_OAUTH_SECRET, host=config.API_HOST, port=config.API_PORT)
         self.created_records = []
         self._create_test_layer()
 
     def _create_test_layer(self):
-        self.layer = Layer('test_layer_' + config.MY_OAUTH_KEY,
+        self.layer = Layer('test.layer.' + config.MY_OAUTH_KEY,
                            'Layer for Tests', 'Layer for \
                             Tests', False, ['http://simplegeo.com',
                             'http://example.com'])
         response = self.client.storage.create_layer(self.layer)
-        self.assertEquals(response, {'status': 'ok'})
+        self.assertEquals(response, {'status': 'OK'})
         response = self.client.storage.get_layer(self.layer.name)
         self.assertEquals(response['name'], self.layer.name)
         self.assertEquals(response['title'], self.layer.title)
@@ -61,7 +61,7 @@ class ClientTest(unittest.TestCase):
 
     def _delete_test_layer(self):
         response = self.client.storage.delete_layer(self.layer.name)
-        self.assertEquals(response, {'status': 'deleted'})
+        self.assertEquals(response, {'status': 'Deleted'})
         self.assertRaises(APIError, self.client.storage.get_layer, self.layer.name)
 
     def _record(self):
@@ -164,7 +164,7 @@ class ClientTest(unittest.TestCase):
     def test_update_layer(self):
         self.layer.public = True
         response = self.client.storage.update_layer(self.layer)
-        self.assertEquals(response, {'status': 'ok'})
+        self.assertEquals(response, {'status': 'OK'})
         response = self.client.storage.get_layer(self.layer.name)
         self.assertEquals(response['name'], self.layer.name)
         self.assertEquals(response['title'], self.layer.title)

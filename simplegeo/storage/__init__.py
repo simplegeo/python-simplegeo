@@ -51,11 +51,11 @@ class Client(ParentClient):
 
     def get_history(self, layer, id, **kwargs):
         endpoint = self._endpoint('history', layer=layer, id=id)
-        return json_decode(self._request(endpoint, "GET", data=quargs)[1])
+        return json_decode(self._request(endpoint, "GET", data=kwargs)[1])
 
     def get_nearby(self, layer, lat, lon, **kwargs):
         endpoint = self._endpoint('nearby', layer=layer, arg='%s,%s' % (lat, lon))
-        return json_decode(self._request(endpoint, "GET", data=quargs)[1])
+        return json_decode(self._request(endpoint, "GET", data=kwargs)[1])
 
     """ Waiting on Gate
     def get_nearby_ip_address(self, layer, ip_address, **kwargs):
