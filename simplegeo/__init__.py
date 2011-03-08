@@ -1,7 +1,7 @@
 from _version import __version__
 
 from urlparse import urljoin
-
+import urllib
 from httplib2 import Http
 import oauth2 as oauth
 from pyutil import jsonutil as json
@@ -109,6 +109,7 @@ class Client(object):
         credentials with oauth.  Returns a tuple of (headers as dict,
         body as string).
         """
+        body = None
         params = {}
         if method == 'GET' and isinstance(data, dict):
             endpoint = endpoint + '?' + urllib.urlencode(data)
