@@ -16,10 +16,10 @@ class Client(ParentClient):
         self.endpoints.update([
             # Places
             ('create', '1.0/places'),
-            ('search', '1.0/places/%(lat)s,%(lon)s.json%(quargs)s'),
-            ('search_by_ip', '1.0/places/%(ipaddr)s.json%(quargs)s'),
-            ('search_by_my_ip', '1.0/places/ip.json%(quargs)s'),
-            ('search_by_address', '1.0/places/address.json?%(quargs)s')])
+            ('search', '1.0/places/%(lat)s,%(lon)s.json'),
+            ('search_by_ip', '1.0/places/%(ipaddr)s.json'),
+            ('search_by_my_ip', '1.0/places/ip.json'),
+            ('search_by_address', '1.0/places/address.json')])
 
     def add_feature(self, feature):
         """Create a new feature, returns the simplegeohandle. """
@@ -70,12 +70,10 @@ class Client(ParentClient):
             kwargs['q'] = query
         if category:
             kwargs['category'] = category
-        quargs = urllib.urlencode(kwargs)
-        if quargs:
-            quargs = '?'+quargs
-        endpoint = self._endpoint('search', lat=lat, lon=lon, quargs=quargs)
 
-        result = self._request(endpoint, 'GET')[1]
+        endpoint = self._endpoint('search', lat=lat, lon=lon)
+
+        result = self._request(endpoint, 'GET', data=kwargs)[1]
 
         fc = json_decode(result)
         return [Feature.from_dict(f) for f in fc['features']]
@@ -106,12 +104,10 @@ class Client(ParentClient):
             kwargs['q'] = query
         if category:
             kwargs['category'] = category
-        quargs = urllib.urlencode(kwargs)
-        if quargs:
-            quargs = '?'+quargs
-        endpoint = self._endpoint('search_by_ip', ipaddr=ipaddr, quargs=quargs)
 
-        result = self._request(endpoint, 'GET')[1]
+        endpoint = self._endpoint('search_by_ip', ipaddr=ipaddr)
+
+        result = self._request(endpoint, 'GET', data=kwargs)[1]
 
         fc = json_decode(result)
         return [Feature.from_dict(f) for f in fc['features']]
@@ -142,12 +138,10 @@ class Client(ParentClient):
             kwargs['q'] = query
         if category:
             kwargs['category'] = category
-        quargs = urllib.urlencode(kwargs)
-        if quargs:
-            quargs = '?'+quargs
-        endpoint = self._endpoint('search_by_my_ip', quargs=quargs)
 
-        result = self._request(endpoint, 'GET')[1]
+        endpoint = self._endpoint('search_by_my_ip')
+
+        result = self._request(endpoint, 'GET', data=kwargs)[1]
 
         fc = json_decode(result)
         return [Feature.from_dict(f) for f in fc['features']]
@@ -181,10 +175,10 @@ class Client(ParentClient):
             kwargs['q'] = query
         if category:
             kwargs['category'] = category
-        quargs = urllib.urlencode(kwargs)
-        endpoint = self._endpoint('search_by_address', quargs=quargs)
+ 
+        endpoint = self._endpoint('search_by_address')
 
-        result = self._request(endpoint, 'GET')[1]
+        result = self._request(endpoint, 'GET', data=kwargs)[1]
 
         fc = json_decode(result)
         return [Feature.from_dict(f) for f in fc['features']]

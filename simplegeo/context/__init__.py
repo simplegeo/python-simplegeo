@@ -17,7 +17,7 @@ class Client(ParentClient):
             ('context', '1.0/context/%(lat)s,%(lon)s.json'),
             ('context_by_ip', '1.0/context/%(ip)s.json'),
             ('context_by_my_ip', '1.0/context/ip.json'),
-            ('context_by_address', '1.0/context/address.json?address=%(address)s')])
+            ('context_by_address', '1.0/context/address.json')])
 
     def get_context(self, lat, lon):
         precondition(is_valid_lat(lat), lat)
@@ -40,7 +40,6 @@ class Client(ParentClient):
         then does the same thing as get_context_by_ip(), using that IP
         address."""
         endpoint = self._endpoint('context_by_my_ip')
-        print endpoint
         return json_decode(self._request(endpoint, "GET")[1])
 
     def get_context_by_address(self, address):
@@ -50,8 +49,8 @@ class Client(ParentClient):
         using that deduced latitude and longitude.
         """
         precondition(isinstance(address, basestring), address)
-        endpoint = self._endpoint('context_by_address', address=urllib.quote_plus(address))
-        return json_decode(self._request(endpoint, "GET")[1])
+        endpoint = self._endpoint('context_by_address')
+        return json_decode(self._request(endpoint, "GET", data={'address' : address})[1])
 
 
 

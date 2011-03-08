@@ -50,16 +50,10 @@ class Client(ParentClient):
         return features.get('features') or []
 
     def get_history(self, layer, id, **kwargs):
-        quargs = urllib.urlencode(kwargs)
-        if quargs:
-                quargs = '?'+quargs
         endpoint = self._endpoint('history', layer=layer, id=id)
         return json_decode(self._request(endpoint, "GET", data=quargs)[1])
 
     def get_nearby(self, layer, lat, lon, **kwargs):
-        quargs = urllib.urlencode(kwargs)
-        if quargs:
-            quargs = '?'+quargs
         endpoint = self._endpoint('nearby', layer=layer, arg='%s,%s' % (lat, lon))
         return json_decode(self._request(endpoint, "GET", data=quargs)[1])
 

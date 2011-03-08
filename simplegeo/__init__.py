@@ -109,10 +109,15 @@ class Client(object):
         credentials with oauth.  Returns a tuple of (headers as dict,
         body as string).
         """
-        if data is not None:
-            data = to_unicode(data)
         params = {}
-        body = data
+        if method == 'GET' and isinstance(data, dict):
+            endpoint = endpoint + '?' + urllib.urlencode(data)
+        else:
+            if isinstance(data, dict):
+                body = urllib.urlencode(data)
+            else:
+                body = data
+
         request = oauth.Request.from_consumer_and_token(self.consumer,
             http_method=method, http_url=endpoint, parameters=params)
 
