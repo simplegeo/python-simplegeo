@@ -1,16 +1,36 @@
-*.pyc
+*.py[co]
+
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+develop-eggs
+.installed.cfg
+man
+.Python
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+
+include
+lib
+
+# ipython
+share
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+
+# vi
 *.swp
-/*.egg-info
-/dist
-/lib
-/bin
-/include
-/.Python
-/*.egg
-/build
-/debian/files
-/debian/*stamp*
-/debian/*.log
-/debian/*.debhelper
-/debian/*.substvars
-/debian/python-simplegeo
