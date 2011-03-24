@@ -13,7 +13,7 @@ if config.MY_OAUTH_KEY == 'MY_OAUTH_KEY' or \
     raise Exception('Please provide the proper credentials in config.py.')
 
 def random_lat_lon():
-    return (random.uniform(-90.0, 90.0), random.uniform(-180.0, 180.0))
+    return (random.uniform(34.27083595165, 45.706179285330855), random.uniform(-113.2470703125, -88.9892578125))
 
 class ConsumptionTest(unittest.TestCase):
     def setUp(self):
