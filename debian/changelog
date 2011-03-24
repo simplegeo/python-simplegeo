@@ -1,3 +1,188 @@
+python-simplegeo (3.0.95) lucid; urgency=low
+
+  [ Joe Stump ]
+  * First commit.
+  * Stubbed out files for client.
+  * Added our internal client code.
+  * Added dependencies to setup.py and fixed minor bug from removing
+    __version__.
+  * Added a .gitignore and switched around the __init__ arguments for
+    Client.
+  * Fixed dependency misspelling and fixed deprecation warning for
+    APIError.message.
+  * Added simplejson to the installation requires.
+  * Use the internal json library for 2.6+ if simplejson isn't around.
+  * Updated the client to work with responses that have no body/content.
+
+  [ Wade Simmons ]
+  * add initial twisted version of SimpleGeo API Client Requires:
+    Twisted 9.0+ and Python 2.5+
+
+  [ dsmith ]
+  * Upgraded the client to use the new version of oauth2
+  * Changed the nearby endpoint
+
+  [ Wade Simmons ]
+  * add support for the /density SpotRank endpoints
+  * Fix a bug with passing end=None to get_layer_stats
+
+  [ dsmith ]
+  * Updated the version to 1.0.0
+
+  [ Zooko Ofsimplegeo ]
+  * read your version number from simplegeo/_version.py at build time
+  * add simplegeo.__version__ attribute, bump version number to 1.0.10
+
+  [ mager ]
+  * Added Python tutorial. Still being tweaked.
+  * Formatting tweaks. PEP8-compliant.
+  * Fixing two typos
+  * One more typo. It should be "sudo python setup.py install"
+  * Third time is the charm
+  * Initial commit of new __init__ file with Pushpin code. Tested new
+    functions, but still tweaking a little bit.
+
+  [ Ben Standefer ]
+  * Added a few consumption tests
+  * Show key and secret in the same order they were given to Client
+
+  [ dsmith ]
+  * Removed the stats endpoints
+  * Incremented version
+
+  [ mager ]
+  * Updated Python tutorial with reverse geocode instructions.
+  * Formatting inconsistencies fixed.
+  * get_nearby() uses lat, lon instead of "lat,lon" Created new
+    get_nearby_geohash() function and updated the README file.
+
+  [ Ian Eure ]
+  * Debianize.
+  * Update ignores.
+  * Added Makefile.
+
+  [ mager ]
+  * Small typo fixed. Thanks Kim.
+  * Fixing typos, code corrections.
+
+  [ dsmith ]
+  * Tagged as 1.1.1
+
+  [ mager ]
+  * Find all polygons that a given point contains. Also cleaned up the
+    file a bit, simplifying it and making it more consistent.
+  * Find all overlapping polygons and boundaries for a given bounding
+    box
+  * Find the boundary of a polygon. Added get_boundary() function to
+    tutorial.
+  * New image, using Photoshop this time.
+
+  [ Ian Eure ]
+  * Switch to pysupport, fix some lintian issues.
+  * Fix deb rule.
+  * Switch to pysupport, fix some lintian issues, fix deb rule, update
+    ignores.
+  * Only print the endpoint if self.debug is set.
+
+  [ mager ]
+  * Updated image... it's a lot cleaner now.
+  * Updated overlaps image
+  * Updated image.
+  * Cleaner image with white lines, text.
+
+  [ Ian Eure ]
+  * Roll 1.1.3 with python-oauth dependency fix.
+  * Sign .debs.
+  * Build-depend on python-setuptools.
+
+  [ Wade Simmons ]
+  * fix reference to simplegeo.APIError
+
+  [ dsmith ]
+  * Fixed a bug where the lat/lon weren't being accessed properly when a
+    Record is initialized from a dict
+  * Squashed commit of the following: commit
+    1247f250adcd2e1fade456d232724bdff19096aa Author: dsmith
+    <derek@simplegeo.com> Date:   Tue Jul 6 15:16:36 2010 -0600
+    Ensured that all tests are passing commit
+    a0869cc791d6d562aa84c503f13d14a370969060 Author: caseycrites
+    <crites.casey@gmail.com> Date:   Tue Jun 29 17:40:26 2010 -0600
+    Changed the python-geohash dependency to >= instead of ==.  Also
+    created some more API consumption tests for the rest of the API
+    endpoints. commit 6de48b771cbe7e550a79bdbf35b2d6936e1a2bfa Author:
+    caseycrites <crites.casey@gmail.com> Date:   Fri Jun 25 16:06:55
+    2010 -0700     Added a few endpoint tests as well as a testing
+    dependency on python-geohash
+  * s/twisted/twistd/
+  * Revert "s/twisted/twistd/" This reverts commit
+    ca0bba35498bb5b36b0fcae50aa322727ec8b9c3.
+  * Added a test for tag filtering on nearby queries.
+  * Use assertEquals for better failure messages
+  * Removed 'type' as a required property of a Record.
+  * We no longer need to assert that a Record's type is defined with the
+    user-defined properties.
+  * Ensure that type is still accessible as a property of the Record
+    when the object is decoded from a dict.
+
+  [ mager ]
+  * Added GeoIP "locate" endpoint.
+  * Added GeoIP "get_contains_ip_address" endpoint.
+  * Added GeoIP "get_nearby_ip_address" endpoint.
+  * Added a "test_locate" test for GeoIP "locate" endpoint.
+
+  [ dsmith ]
+  * Specify a limit when doing a nearby tag request. Added tests for the
+    nearby ip address method and ip address contains method.
+  * We need to compare the length of the feature set.
+
+  [ Zooko ]
+  * trying to repair the hudson config for building this project,
+    changing something just to trigger a new build
+
+  [ Ben Standefer ]
+  * Made backwards compatible. Still need to fix tests. WTF.
+  * Fixed tests.
+  * Add imports for backwards compatibility.
+  * Don't run pyflakes since we need unused imports to support BC.
+  * Disable pyflakes the right way.
+  * Remove namespace stuff, it's messing up the resulting .debs.
+  * Try removing namespace_packages from setup.py.
+  * Specify python-oauth2 as a run-time dependency in debian/control.
+  * Added more explicit run-time dependencies.  It looks like the
+    python:Depends variable in debian/control should do this, but might
+    not be working?
+  * Continue to provide/accept the API_VERSION variable.  Even though it
+    doesn't impact the request URLs right now, it may down the road.
+  * Add Provides/Replaces/Conflicts logic to replace old Debian
+    packages.
+  * Oh yeah, blank lines mean stuff in debian/control.
+  * Add backwards compatibility with simplegeo.shared.
+  * simplegeo/__init__.py
+  * Fix BC imports, whoops.
+  * More fanciful backwards compatiblity for the old Storage client. Ian
+    E.: To BC, or not to BC, that is the question: Whether ’tis nobler
+    in the mind to suffer the slings and arrows of outraged developers,
+    or to take arms against a sea of code, and by opposing end them? To
+    exit(): to sleep().
+  * Update comment on layer management being pre-release.
+
+  [ dsmith ]
+  * Put the HTTP parameter logic into a single place instead of doing it
+    in URI string formations for each client.
+  * Define body first.
+
+  [ Ben Standefer ]
+  * Only append parameters to GET requests if the data dict is
+    populated. Fix tests to support new way.
+  * Fix consumption tests.
+  * Cleanup old stuff after merging new client code. No more Twisted, no
+    redundant README, test_client has been copied (not via git) to the
+    consumption/ directory, move test_record to simplegeo/test/models.
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Thu, 24 Mar 2011 23:00:20 +0000
+
 python-simplegeo (3.0.5) lucid; urgency=low
 
   [ Ben Standefer ]
