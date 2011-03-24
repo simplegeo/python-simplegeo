@@ -1,24 +1,23 @@
-python-simplegeo (1.1.4) unstable; urgency=low
+python-simplegeo (3.0.5) lucid; urgency=low
 
-  * Creating a Record from a dictionary was using the wrong indexes for lat and lon
+  [ Ben Standefer ]
+  * Add consumption test for Context.
 
- -- Derek Smith <derek@simplegeo.com>  Sat, 12 Jun 2010 10:01:10 -0700
+  [ SimpleGeo Nerds ]
 
-python-simplegeo (1.1.4) unstable; urgency=low
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Fri, 25 Feb 2011 01:52:01 +0000
 
-  * Build-depend on python-setuptools
-  * Bump version.
+python-simplegeo (3.0.4) lucid; urgency=low
 
- -- Ian Eure <ian@simplegeo.com>  Fri, 11 Jun 2010 16:17:47 -0700
+  [ Ben Standefer ]
+  * Don't redefine get_layer.
 
-python-simplegeo (1.1.3) unstable; urgency=low
+  [ SimpleGeo Nerds ]
 
-  * Depend on correct version of python-oauth2.
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Fri, 25 Feb 2011 00:38:58 +0000
 
- -- Ian Eure <ian@simplegeo.com>  Mon, 24 May 2010 15:54:21 -0700
+python-simplegeo (3.0.0) unstable; urgency=low
 
-python-simplegeo (1.1.0) unstable; urgency=low
+  * initial version
 
-  * Debianized.
-
- -- Ian Eure <ian@simplegeo.com>  Wed, 12 May 2010 13:46:45 -0700
+ -- Ben Standefer <ben@simplegeo.com>  Thu, 24 Feb 2011 10:01:10 -0700
