@@ -36,7 +36,7 @@ class Client(object):
         self.key = key
         self.secret = secret
         self.signature = oauth.SignatureMethod_HMAC_SHA1()
-        self.uri = "http://%s:%s" % (host, port)
+        self.uri = "https://%s:%s" % (host, port)
         self.headers = None
         self.https = https
 
