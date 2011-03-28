@@ -38,7 +38,6 @@ class Client(object):
         self.signature = oauth.SignatureMethod_HMAC_SHA1()
         self.uri = "http://%s:%s" % (host, port)
         self.headers = None
-        self.https = https
 
         self.subclient = getattr(self, 'subclient', False)
 
@@ -127,7 +126,7 @@ class Client(object):
         headers = request.to_header(self.realm)
         headers['User-Agent'] = 'SimpleGeo Python Client v%s' % __version__
 
-        self.headers, content = self.https.request(endpoint, method, body=body, headers=headers)
+        self.headers, content = https.do_request(endpoint, method, body=body, headers=headers)
 
         if self.headers['status'][0] not in ('2', '3'):
             raise APIError(int(self.headers['status']), content, self.headers)

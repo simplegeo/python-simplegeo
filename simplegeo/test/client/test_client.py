@@ -107,60 +107,60 @@ class ClientTest(unittest.TestCase):
         h = self.client.get_most_recent_http_headers()
         self.failUnlessEqual(h, None)
 
-        mockhttps = mock.Mock()
-        mockhttps.request.return_value = ({'status': '200', 'content-type': 'application/json', 'thingie': "just to see if you're listening"}, EXAMPLE_POINT_BODY)
-        self.client.https = mockhttps
+        mockhttp = mock.Mock()
+        mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', 'thingie': "just to see if you're listening"}, EXAMPLE_POINT_BODY)
+        self.client.http = mockhttp
 
         self.client.get_feature("SG_4bgzicKFmP89tQFGLGZYy0_34.714646_-86.584970")
         h = self.client.get_most_recent_http_headers()
         self.failUnlessEqual(h, {'status': '200', 'content-type': 'application/json', 'thingie': "just to see if you're listening"})
 
     def test_get_point_feature(self):
-        mockhttps = mock.Mock()
-        mockhttps.request.return_value = ({'status': '200', 'content-type': 'application/json', 'thingie': "just to see if you're listening"}, EXAMPLE_POINT_BODY)
-        self.client.https = mockhttps
+        mockhttp = mock.Mock()
+        mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', 'thingie': "just to see if you're listening"}, EXAMPLE_POINT_BODY)
+        self.client.http = mockhttp
 
         res = self.client.get_feature("SG_4bgzicKFmP89tQFGLGZYy0_34.714646_-86.584970")
-        self.assertEqual(mockhttps.method_calls[0][0], 'request')
-        self.assertEqual(mockhttps.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/features/%s.json' % (API_VERSION, "SG_4bgzicKFmP89tQFGLGZYy0_34.714646_-86.584970"))
-        self.assertEqual(mockhttps.method_calls[0][1][1], 'GET')
+        self.assertEqual(mockhttp.method_calls[0][0], 'request')
+        self.assertEqual(mockhttp.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/features/%s.json' % (API_VERSION, "SG_4bgzicKFmP89tQFGLGZYy0_34.714646_-86.584970"))
+        self.assertEqual(mockhttp.method_calls[0][1][1], 'GET')
         # the code under test is required to have json-decoded this before handing it back
         self.failUnless(isinstance(res, Feature), (repr(res), type(res)))
 
     def test_get_polygon_feature(self):
-        mockhttps = mock.Mock()
-        mockhttps.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
-        self.client.https = mockhttps
+        mockhttp = mock.Mock()
+        mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
+        self.client.http = mockhttp
 
         res = self.client.get_feature("SG_4bgzicKFmP89tQFGLGZYy0_34.714646_-86.584970")
-        self.assertEqual(mockhttps.method_calls[0][0], 'request')
-        self.assertEqual(mockhttps.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/features/%s.json' % (API_VERSION, "SG_4bgzicKFmP89tQFGLGZYy0_34.714646_-86.584970"))
+        self.assertEqual(mockhttp.method_calls[0][0], 'request')
+        self.assertEqual(mockhttp.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/features/%s.json' % (API_VERSION, "SG_4bgzicKFmP89tQFGLGZYy0_34.714646_-86.584970"))
 
-        self.assertEqual(mockhttps.method_calls[0][1][1], 'GET')
+        self.assertEqual(mockhttp.method_calls[0][1][1], 'GET')
         # the code under test is required to have json-decoded this before handing it back
         self.failUnless(isinstance(res, Feature), (repr(res), type(res)))
 
     def test_get_feature_bad_json(self):
-        mockhttps = mock.Mock()
-        mockhttps.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY + 'some crap')
-        self.client.https = mockhttps
+        mockhttp = mock.Mock()
+        mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY + 'some crap')
+        self.client.http = mockhttp
 
         try:
             self.client.get_feature("SG_4bgzicKFmP89tQFGLGZYy0_34.714646_-86.584970")
         except DecodeError, e:
             self.failUnlessEqual(e.code, None, repr(e.code))
 
-        self.assertEqual(mockhttps.method_calls[0][0], 'request')
-        self.assertEqual(mockhttps.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/features/%s.json' % (API_VERSION, "SG_4bgzicKFmP89tQFGLGZYy0_34.714646_-86.584970"))
-        self.assertEqual(mockhttps.method_calls[0][1][1], 'GET')
+        self.assertEqual(mockhttp.method_calls[0][0], 'request')
+        self.assertEqual(mockhttp.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/features/%s.json' % (API_VERSION, "SG_4bgzicKFmP89tQFGLGZYy0_34.714646_-86.584970"))
+        self.assertEqual(mockhttp.method_calls[0][1][1], 'GET')
 
     def test_dont_json_decode_results(self):
         """ _request() is required to return the exact string that the HTTP
         server sent to it -- no transforming it, such as by json-decoding. """
 
-        mockhttps = mock.Mock()
-        mockhttps.request.return_value = ({'status': '200', 'content-type': 'application/json', }, '{ "Hello": "I am a string. \xe2\x9d\xa4" }'.decode('utf-8'))
-        self.client.https = mockhttps
+        mockhttp = mock.Mock()
+        mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, '{ "Hello": "I am a string. \xe2\x9d\xa4" }'.decode('utf-8'))
+        self.client.http = mockhttp
         res = self.client._request("http://thing", 'POST')[1]
         self.failUnlessEqual(res, '{ "Hello": "I am a string. \xe2\x9d\xa4" }'.decode('utf-8'))
 
@@ -171,27 +171,26 @@ class ClientTest(unittest.TestCase):
 
         EXAMPLE_RECORD_JSONSTR=json.dumps({ 'geometry' : { 'type' : 'Point', 'coordinates' : [D('10.0'), D('11.0')] }, 'id' : 'my_id', 'type' : 'Feature', 'properties' : { 'key' : 'value'  , 'type' : 'object' } })
 
-        mockhttps = mock.Mock()
-        mockhttps.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_RECORD_JSONSTR)
-        self.client.https = mockhttps
+        mockhttp = mock.Mock()
+        mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_RECORD_JSONSTR)
+        self.client.http = mockhttp
         res = self.client._request("http://thing", 'POST')[1]
         self.failUnlessEqual(res, EXAMPLE_RECORD_JSONSTR)
 
     def test_get_feature_error(self):
-        mockhttps = mock.Mock()
-        mockhttps.request.return_value = ({'status': '500', 'content-type': 'application/json', }, '{"message": "help my web server is confuzzled"}')
-        self.client.https = mockhttps
+        mockhttp = mock.Mock()
+        mockhttp.request.return_value = ({'status': '500', 'content-type': 'application/json', }, '{"message": "help my web server is confuzzled"}')
+        self.client.http = mockhttp
 
         try:
             self.client.get_feature("SG_4bgzicKFmP89tQFGLGZYy0_34.714646_-86.584970")
         except APIError, e:
-            print repr(e)
             self.failUnlessEqual(e.code, 500, repr(e.code))
             self.failUnlessEqual(e.msg, '{"message": "help my web server is confuzzled"}', (type(e.msg), repr(e.msg)))
 
-        self.assertEqual(mockhttps.method_calls[0][0], 'request')
-        self.assertEqual(mockhttps.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/features/%s.json' % (API_VERSION, "SG_4bgzicKFmP89tQFGLGZYy0_34.714646_-86.584970"))
-        self.assertEqual(mockhttps.method_calls[0][1][1], 'GET')
+        self.assertEqual(mockhttp.method_calls[0][0], 'request')
+        self.assertEqual(mockhttp.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/features/%s.json' % (API_VERSION, "SG_4bgzicKFmP89tQFGLGZYy0_34.714646_-86.584970"))
+        self.assertEqual(mockhttp.method_calls[0][1][1], 'GET')
 
     def test_APIError(self):
         e = APIError(500, 'whee', {'status': "500"})
@@ -215,16 +214,16 @@ class TestAnnotations(unittest.TestCase):
         self.handle = 'SG_4H2GqJDZrc0ZAjKGR8qM4D'
 
     def test_get_annotations(self):
-        mockhttps = mock.Mock()
+        mockhttp = mock.Mock()
         headers = {'status': '200', 'content-type': 'application/json'}
-        mockhttps.request.return_value = (headers, json.dumps(EXAMPLE_ANNOTATIONS_RESPONSE))
-        self.client.https = mockhttps
+        mockhttp.request.return_value = (headers, json.dumps(EXAMPLE_ANNOTATIONS_RESPONSE))
+        self.client.http = mockhttp
 
         res = self.client.get_annotations(self.handle)
 
-        self.assertEqual(mockhttps.method_calls[0][0], 'request')
-        self.assertEqual(mockhttps.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/features/%s/annotations.json' % (API_VERSION, self.handle))
-        self.assertEqual(mockhttps.method_calls[0][1][1], 'GET')
+        self.assertEqual(mockhttp.method_calls[0][0], 'request')
+        self.assertEqual(mockhttp.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/features/%s/annotations.json' % (API_VERSION, self.handle))
+        self.assertEqual(mockhttp.method_calls[0][1][1], 'GET')
 
         # Make sure client returns a dict.
         self.failUnless(isinstance(res, dict))
@@ -238,16 +237,16 @@ class TestAnnotations(unittest.TestCase):
             self.fail('Should have raised exception.')
 
     def test_annotate(self):
-        mockhttps = mock.Mock()
+        mockhttp = mock.Mock()
         headers = {'status': '200', 'content-type': 'application/json'}
-        mockhttps.request.return_value = (headers, json.dumps(EXAMPLE_ANNOTATE_RESPONSE))
-        self.client.https = mockhttps
+        mockhttp.request.return_value = (headers, json.dumps(EXAMPLE_ANNOTATE_RESPONSE))
+        self.client.http = mockhttp
 
         res = self.client.annotate(self.handle, EXAMPLE_ANNOTATIONS, True)
 
-        self.assertEqual(mockhttps.method_calls[0][0], 'request')
-        self.assertEqual(mockhttps.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/features/%s/annotations.json' % (API_VERSION, self.handle))
-        self.assertEqual(mockhttps.method_calls[0][1][1], 'POST')
+        self.assertEqual(mockhttp.method_calls[0][0], 'request')
+        self.assertEqual(mockhttp.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/features/%s/annotations.json' % (API_VERSION, self.handle))
+        self.assertEqual(mockhttp.method_calls[0][1][1], 'POST')
 
         # Make sure client returns a dict.
         self.failUnless(isinstance(res, dict))
