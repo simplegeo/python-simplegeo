@@ -1,3 +1,15 @@
+python-simplegeo (3.0.98) lucid; urgency=low
+
+  [ Ben Standefer ]
+  * Revert "Fix tests for HTTPS support with certificate checking." This
+    reverts commit f8975b165175af1d631f47cd8e846e7f076434a6.
+  * Revert "Add SSL support with server certificate checking." This
+    reverts commit 5a1e3d51f97037ac6c3af77b40a738cf35123cf8.
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Mon, 28 Mar 2011 23:08:34 +0000
+
 python-simplegeo (3.0.96) lucid; urgency=low
 
   [ Ben Standefer ]
