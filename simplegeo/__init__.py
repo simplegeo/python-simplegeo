@@ -8,6 +8,7 @@ from pyutil import jsonutil as json
 
 from simplegeo.models import Feature
 from simplegeo.util import json_decode, APIError, SIMPLEGEOHANDLE_RSTR, is_simplegeohandle, to_unicode
+from simplegeo import https
 
 # For backwards compatibility with other codebases.
 from simplegeo.util import APIError, DecodeError
@@ -20,7 +21,7 @@ API_VERSION = '1.0'
 
 class Client(object):
 
-    realm = "http://api.simplegeo.com"
+    realm = "https://api.simplegeo.com"
     endpoints = {
         # Shared
         'feature': '1.0/features/%(simplegeohandle)s.json',
@@ -36,8 +37,8 @@ class Client(object):
         self.secret = secret
         self.signature = oauth.SignatureMethod_HMAC_SHA1()
         self.uri = "http://%s:%s" % (host, port)
-        self.http = Http()
         self.headers = None
+        self.https = https
 
         self.subclient = getattr(self, 'subclient', False)
 
@@ -126,7 +127,7 @@ class Client(object):
         headers = request.to_header(self.realm)
         headers['User-Agent'] = 'SimpleGeo Python Client v%s' % __version__
 
-        self.headers, content = self.http.request(endpoint, method, body=body, headers=headers)
+        self.headers, content = self.https.request(endpoint, method, body=body, headers=headers)
 
         if self.headers['status'][0] not in ('2', '3'):
             raise APIError(int(self.headers['status']), content, self.headers)
