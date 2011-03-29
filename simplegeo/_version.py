@@ -2,7 +2,7 @@
 
 manual_verstr = "3.0"
 
-auto_build_num = "98"
+auto_build_num = "99"
 
 verstr = manual_verstr + "." + auto_build_num
 
