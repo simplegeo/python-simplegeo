@@ -1,3 +1,5 @@
+consumption/config.py
+
 *.py[co]
 
 # Packages
