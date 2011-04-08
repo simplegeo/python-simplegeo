@@ -1,3 +1,12 @@
+python-simplegeo (3.0.101) lucid; urgency=low
+
+  [ Ben Standefer ]
+  * Whoops, delete OAUTH information. Also deleted from server side.
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Fri, 08 Apr 2011 18:17:21 +0000
+
 python-simplegeo (3.0.100) lucid; urgency=low
 
   * UNRELEASED
