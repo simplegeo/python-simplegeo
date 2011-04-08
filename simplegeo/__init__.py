@@ -12,6 +12,7 @@ from simplegeo.util import json_decode, APIError, SIMPLEGEOHANDLE_RSTR, is_simpl
 # For backwards compatibility with other codebases.
 from simplegeo.util import APIError, DecodeError
 from simplegeo.models import Record
+from simplegeo import https
 
 
 # This is arbitrary for now.  Storage URLs are still /0.1/.  Left this in the constructors for future use.
@@ -28,15 +29,21 @@ class Client(object):
         # More endpoints are added by mixins.
     }
 
-    def __init__(self, key, secret, api_version=API_VERSION, host="api.simplegeo.com", port=80):
+    def __init__(self, key, secret, api_version=API_VERSION, host="api.simplegeo.com", port=80, ssl=False):
         self.host = host
         self.port = port
         self.consumer = oauth.Consumer(key, secret)
         self.key = key
         self.secret = secret
         self.signature = oauth.SignatureMethod_HMAC_SHA1()
-        self.uri = "http://%s:%s" % (host, port)
-        self.http = Http()
+        self.ssl = ssl
+        if self.ssl:
+            self.uri = "https://%s:%s" % (host, port)
+            self.http = https
+            self.port = 443
+        else:
+            self.uri = "http://%s:%s" % (host, port)
+            self.http = Http()
         self.headers = None
 
         self.subclient = getattr(self, 'subclient', False)
