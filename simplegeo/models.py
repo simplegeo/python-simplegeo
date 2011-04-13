@@ -185,7 +185,7 @@ class Layer(object):
             return None
         layer = cls(data.get('name'), data.get('title'),
                     data.get('description'), data.get('public'),
-                    data.get('callback_urls'))
+                    data.get('callback_urls', []))
         return layer
 
     def to_dict(self):
