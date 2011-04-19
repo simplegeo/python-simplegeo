@@ -5,6 +5,7 @@ import urllib
 from httplib2 import Http
 import oauth2 as oauth
 from pyutil import jsonutil as json
+from pyutil.assertutil import precondition
 
 from simplegeo.models import Feature
 from simplegeo.util import json_decode, APIError, SIMPLEGEOHANDLE_RSTR, is_simplegeohandle, to_unicode
@@ -70,12 +71,16 @@ class Client(object):
             raise TypeError('Missing required argument "%s"' % (e.args[0],))
         return urljoin(urljoin(self.uri, '/'), endpoint)
 
-    def get_feature(self, simplegeohandle):
+    def get_feature(self, simplegeohandle, zoom=None):
         """Return the GeoJSON representation of a feature."""
         if not is_simplegeohandle(simplegeohandle):
             raise TypeError("simplegeohandle is required to match the regex %s, but it was %s :: %r" % (SIMPLEGEOHANDLE_RSTR, type(simplegeohandle), simplegeohandle))
+        kwargs = {}
+        if zoom:
+            precondition(zoom >= 1 and zoom <= 20, zoom)
+            kwargs['zoom'] = zoom
         endpoint = self._endpoint('feature', simplegeohandle=simplegeohandle)
-        return Feature.from_json(self._request(endpoint, 'GET')[1])
+        return Feature.from_json(self._request(endpoint, 'GET', data=kwargs)[1])
 
     def get_annotations(self, simplegeohandle):
         if not is_simplegeohandle(simplegeohandle):
