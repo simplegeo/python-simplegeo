@@ -1,3 +1,13 @@
+python-simplegeo (3.0.103) lucid; urgency=low
+
+  [ Andrew Mager ]
+  * Added support for zoom in get_feature()
+  * Updated docstring for zoom parameter in get_feature()
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Tue, 19 Apr 2011 20:02:06 +0000
+
 python-simplegeo (3.0.102) lucid; urgency=low
 
   [ Ben Standefer ]
