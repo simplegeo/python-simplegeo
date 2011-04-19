@@ -72,7 +72,8 @@ class Client(object):
         return urljoin(urljoin(self.uri, '/'), endpoint)
 
     def get_feature(self, simplegeohandle, zoom=None):
-        """Return the GeoJSON representation of a feature."""
+        """Return the GeoJSON representation of a feature. Zoom needs to be
+        between 1-20, or None for the full polygon."""
         if not is_simplegeohandle(simplegeohandle):
             raise TypeError("simplegeohandle is required to match the regex %s, but it was %s :: %r" % (SIMPLEGEOHANDLE_RSTR, type(simplegeohandle), simplegeohandle))
         kwargs = {}
