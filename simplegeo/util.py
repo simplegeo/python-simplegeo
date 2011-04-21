@@ -81,7 +81,7 @@ def is_valid_ip(ip):
     else:
         return True
 
-SIMPLEGEOHANDLE_RSTR=r"""SG_[A-Za-z0-9]{22}(?:_-?[0-9]{1,3}(?:\.[0-9]+)?_-?[0-9]{1,3}(?:\.[0-9]+)?)?(?:@[0-9]+)?$"""
+SIMPLEGEOHANDLE_RSTR=r"""SG_[A-Za-z0-9]{22}(?:_-?[0-9]{1,3}(?:\.[0-9]+)?_-?[0-9]{1,3}(?:\.[0-9]+)?)?(?:@-?[0-9]+)?$"""
 SIMPLEGEOHANDLE_R= re.compile(SIMPLEGEOHANDLE_RSTR)
 def is_simplegeohandle(s):
     return isinstance(s, basestring) and SIMPLEGEOHANDLE_R.match(s)
