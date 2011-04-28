@@ -6,6 +6,7 @@ from httplib2 import Http
 import oauth2 as oauth
 from pyutil import jsonutil as json
 from pyutil.assertutil import precondition
+import warnings
 
 from simplegeo.models import Feature
 from simplegeo.util import json_decode, APIError, SIMPLEGEOHANDLE_RSTR, is_simplegeohandle, to_unicode
@@ -39,7 +40,7 @@ class Client(object):
         self.uri = "http://%s:%s" % (host, port)
         self.http = Http()
         self.req_headers = {}
-        self.res_headers = {}
+        self.headers = self.res_headers = {}
 
         self.subclient = getattr(self, 'subclient', False)
 
@@ -58,6 +59,7 @@ class Client(object):
     def get_most_recent_http_headers(self):
         """ Intended for debugging -- return the most recent HTTP
         headers which were received from the server. """
+        warnings.warn('Access self.res_headers directly.', DeprecationWarning)
         return self.res_headers
 
     def _endpoint(self, name, **kwargs):
