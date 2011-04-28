@@ -38,7 +38,8 @@ class Client(object):
         self.signature = oauth.SignatureMethod_HMAC_SHA1()
         self.uri = "http://%s:%s" % (host, port)
         self.http = Http()
-        self.headers = None
+        self.req_headers = {}
+        self.res_headers = {}
 
         self.subclient = getattr(self, 'subclient', False)
 
@@ -57,7 +58,7 @@ class Client(object):
     def get_most_recent_http_headers(self):
         """ Intended for debugging -- return the most recent HTTP
         headers which were received from the server. """
-        return self.headers
+        return self.res_headers
 
     def _endpoint(self, name, **kwargs):
         """Not used directly. Finds and formats the endpoints as needed for any type of request."""
@@ -129,15 +130,16 @@ class Client(object):
             http_method=method, http_url=endpoint, parameters=params)
 
         request.sign_request(self.signature, self.consumer, None)
-        headers = request.to_header(self.realm)
-        headers['User-Agent'] = 'SimpleGeo Python Client v%s' % __version__
+        self.req_headers.update(request.to_header(self.realm))
+        self.req_headers['User-Agent'] = 'SimpleGeo Python Client v%s' % __version__
 
-        self.headers, content = self.http.request(endpoint, method, body=body, headers=headers)
+        self.res_headers, content = self.http.request(endpoint, method, body=body,
+                                                  headers=self.req_headers)
 
-        if self.headers['status'][0] not in ('2', '3'):
-            raise APIError(int(self.headers['status']), content, self.headers)
+        if self.res_headers['status'][0] not in ('2', '3'):
+            raise APIError(int(self.res_headers['status']), content, self.res_headers)
 
-        return self.headers, content
+        return self.res_headers, content
 
 
 from simplegeo.context import Client as ContextClient
