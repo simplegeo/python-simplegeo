@@ -59,8 +59,8 @@ class Client(object):
     def get_most_recent_http_headers(self):
         """ Intended for debugging -- return the most recent HTTP
         headers which were received from the server. """
-        warnings.warn('Please access self.headers directly instead of \
-                      calling get_most_recent_http_headers().', DeprecationWarning)
+        warnings.warn('Please access self.headers directly instead of '
+                      'calling get_most_recent_http_headers().', DeprecationWarning)
         return self.headers
 
     def _endpoint(self, name, **kwargs):
