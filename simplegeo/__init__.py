@@ -40,7 +40,7 @@ class Client(object):
         self.uri = "http://%s:%s" % (host, port)
         self.http = Http()
         self.req_headers = {}
-        self.headers = self.res_headers = {}
+        self.headers = {}
 
         self.subclient = getattr(self, 'subclient', False)
 
@@ -59,8 +59,9 @@ class Client(object):
     def get_most_recent_http_headers(self):
         """ Intended for debugging -- return the most recent HTTP
         headers which were received from the server. """
-        warnings.warn('Access self.res_headers directly.', DeprecationWarning)
-        return self.res_headers
+        warnings.warn('Please access self.headers directly instead of \
+                      calling get_most_recent_http_headers().', DeprecationWarning)
+        return self.headers
 
     def _endpoint(self, name, **kwargs):
         """Not used directly. Finds and formats the endpoints as needed for any type of request."""
@@ -132,16 +133,17 @@ class Client(object):
             http_method=method, http_url=endpoint, parameters=params)
 
         request.sign_request(self.signature, self.consumer, None)
-        self.req_headers.update(request.to_header(self.realm))
-        self.req_headers['User-Agent'] = 'SimpleGeo Python Client v%s' % __version__
+        headers = request.to_header(self.realm)
+        headers['User-Agent'] = 'SimpleGeo Python Client v%s' % __version__
+        headers.update(self.req_headers)
 
-        self.res_headers, content = self.http.request(endpoint, method, body=body,
-                                                  headers=self.req_headers)
+        self.headers, content = self.http.request(endpoint, method, body=body,
+                                                  headers=headers)
 
-        if self.res_headers['status'][0] not in ('2', '3'):
-            raise APIError(int(self.res_headers['status']), content, self.res_headers)
+        if self.headers['status'][0] not in ('2', '3'):
+            raise APIError(int(self.headers['status']), content, self.headers)
 
-        return self.res_headers, content
+        return self.headers, content
 
 
 from simplegeo.context import Client as ContextClient
