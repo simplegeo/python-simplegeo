@@ -1,3 +1,21 @@
+python-simplegeo (3.0.105) lucid; urgency=low
+
+  [ caseycrites ]
+  * Added self.req_headers and self.res_headers so that people can set
+    headers on requests.
+  * Re-added self.headers in a way so that it mirrors self.res_headers.
+    Also added a deprecation warning to get_most_recent_http_headers.
+  * Removed res_headers since keeping it and headers synced up was a
+    pain in the ass that wasn't worth it. Also, reintroduced the local
+    headers var in _request and updated it with self.req_headers so
+    there's no leaking of header values.
+  * Fixed the deprecation warning message to use implicit string
+    concatenation to eliminate whitespace.
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Fri, 29 Apr 2011 18:13:09 +0000
+
 python-simplegeo (3.0.104) lucid; urgency=low
 
   [ Ian Eure ]
