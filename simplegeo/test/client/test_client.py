@@ -105,7 +105,7 @@ class ClientTest(unittest.TestCase):
 
     def test_get_most_recent_http_headers(self):
         h = self.client.get_most_recent_http_headers()
-        self.failUnlessEqual(h, None)
+        self.failUnlessEqual(h, {})
 
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', 'thingie': "just to see if you're listening"}, EXAMPLE_POINT_BODY)
