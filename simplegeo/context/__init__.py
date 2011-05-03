@@ -8,16 +8,18 @@ from simplegeo import Client as ParentClient
 
 class Client(ParentClient):
 
-    def __init__(self, key, secret, api_version='1.0', host='api.simplegeo.com', port=80):
+    def __init__(self, key, secret, api_version='1.0', **kwargs):
         self.subclient = True
-        ParentClient.__init__(self, key, secret, host=host, port=port)
+        ParentClient.__init__(self, key, secret, **kwargs)
 
-        self.endpoints.update([
-            # Context
-            ('context', '1.0/context/%(lat)s,%(lon)s.json'),
-            ('context_by_ip', '1.0/context/%(ip)s.json'),
-            ('context_by_my_ip', '1.0/context/ip.json'),
-            ('context_by_address', '1.0/context/address.json')])
+        context_endpoints = [
+            ['context', '/context/%(lat)s,%(lon)s.json'],
+            ['context_by_ip', '/context/%(ip)s.json'],
+            ['context_by_my_ip', '/context/ip.json'],
+            ['context_by_address', '/context/address.json']
+        ]
+
+        self.endpoints.update(map(lambda x: (x[0], api_version+x[1]), context_endpoints))
 
     def get_context(self, lat, lon):
         precondition(is_valid_lat(lat), lat)

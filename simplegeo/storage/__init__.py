@@ -8,18 +8,21 @@ from simplegeo import Client as ParentClient
 
 class Client(ParentClient):
 
-    def __init__(self, key, secret, api_version='0.1', host='api.simplegeo.com', port=80):
+    def __init__(self, key, secret, api_version='0.1', **kwargs):
         self.subclient = True
-        ParentClient.__init__(self, key, secret, host=host, port=port)
+        ParentClient.__init__(self, key, secret, **kwargs)
 
-        self.endpoints.update([
-            ('record', '0.1/records/%(layer)s/%(id)s.json'),
-            ('records', '0.1/records/%(layer)s/%(ids)s.json'),
-            ('add_records', '0.1/records/%(layer)s.json'),
-            ('history', '0.1/records/%(layer)s/%(id)s/history.json'),
-            ('nearby', '0.1/records/%(layer)s/nearby/%(arg)s.json'),
-            ('layer', '0.1/layers/%(layer)s.json'),
-            ('layers', '0.1/layers.json')])
+        storage_endpoints = [
+            ['record', '/records/%(layer)s/%(id)s.json'],
+            ['records', '/records/%(layer)s/%(ids)s.json'],
+            ['add_records', '/records/%(layer)s.json'],
+            ['history', '/records/%(layer)s/%(id)s/history.json'],
+            ['nearby', '/records/%(layer)s/nearby/%(arg)s.json'],
+            ['layer', '/layers/%(layer)s.json'],
+            ['layers', '/layers.json']
+        ]
+
+        self.endpoints.update(map(lambda x: (x[0], api_version+x[1]), storage_endpoints))
 
     def add_record(self, record):
         if not hasattr(record, 'layer'):
