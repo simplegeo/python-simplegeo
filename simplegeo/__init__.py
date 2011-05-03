@@ -30,7 +30,7 @@ class Client(object):
         # More endpoints are added by mixins.
     }
 
-    def __init__(self, key, secret, api_version=API_VERSION, host="api.simplegeo.com", port=80):
+    def __init__(self, key, secret, api_version=API_VERSION, host="api.simplegeo.com", port=80, timeout=None):
         self.host = host
         self.port = port
         self.consumer = oauth.Consumer(key, secret)
@@ -38,8 +38,8 @@ class Client(object):
         self.secret = secret
         self.signature = oauth.SignatureMethod_HMAC_SHA1()
         self.uri = "http://%s:%s" % (host, port)
-        self.http = Http()
         self.req_headers = {}
+        self.http = Http(timeout=timeout)
         self.headers = {}
 
         self.subclient = getattr(self, 'subclient', False)
