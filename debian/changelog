@@ -1,3 +1,16 @@
+python-simplegeo (3.0.106) lucid; urgency=low
+
+  [ dsmith ]
+  * Allow a timeout value to be set in the internal http client.
+  * Fixed up the subclass constructors of the Client class to pass in
+    kwargs instead of explicitly defining them
+  * Not sure why self.headers was changed to None. I believe there was a
+    merge conflict that I missed.
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Tue, 03 May 2011 19:47:51 +0000
+
 python-simplegeo (3.0.105) lucid; urgency=low
 
   [ caseycrites ]
