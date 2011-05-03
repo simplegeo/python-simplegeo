@@ -9,17 +9,19 @@ from simplegeo import Client as ParentClient
 
 class Client(ParentClient):
 
-    def __init__(self, key, secret, api_version='1.0', host='api.simplegeo.com', port=80):
+    def __init__(self, key, secret, api_version='1.0', **kwargs):
         self.subclient = True
-        ParentClient.__init__(self, key, secret, host=host, port=port)
+        ParentClient.__init__(self, key, secret, **kwargs)
 
-        self.endpoints.update([
-            # Places
-            ('create', '1.0/places'),
-            ('search', '1.0/places/%(lat)s,%(lon)s.json'),
-            ('search_by_ip', '1.0/places/%(ipaddr)s.json'),
-            ('search_by_my_ip', '1.0/places/ip.json'),
-            ('search_by_address', '1.0/places/address.json')])
+        places_endpoints = [
+            ['create', '/places'],
+            ['search', '/places/%(lat)s,%(lon)s.json'],
+            ['search_by_ip', '/places/%(ipaddr)s.json'],
+            ['search_by_my_ip', '/places/ip.json'],
+            ['search_by_address', '/places/address.json']
+        ]
+
+        self.endpoints.update(map(lambda x: (x[0], api_version+x[1]), places_endpoints))
 
     def add_feature(self, feature):
         """Create a new feature, returns the simplegeohandle. """
