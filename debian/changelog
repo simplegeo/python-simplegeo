@@ -1,3 +1,12 @@
+python-simplegeo (3.0.107) lucid; urgency=low
+
+  [ Ian Eure ]
+  * Fix regexp to allow timestamps older than Jan. 1, 1970.
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Tue, 03 May 2011 20:22:24 +0000
+
 python-simplegeo (3.0.106) lucid; urgency=low
 
   [ dsmith ]
