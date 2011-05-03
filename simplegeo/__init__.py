@@ -40,7 +40,7 @@ class Client(object):
         self.uri = "http://%s:%s" % (host, port)
         self.req_headers = {}
         self.http = Http(timeout=timeout)
-        self.headers = None
+        self.headers = {}
 
         self.subclient = getattr(self, 'subclient', False)
 
