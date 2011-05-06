@@ -1,6 +1,6 @@
 import urllib
 
-from pyutil import jsonutil as json
+import simplegeo.json as json
 
 from simplegeo.util import json_decode
 from simplegeo import Client as ParentClient

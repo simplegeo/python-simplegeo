@@ -1,8 +1,9 @@
 import urllib
 
-from pyutil.assertutil import precondition
-
-from simplegeo.util import json_decode, APIError, SIMPLEGEOHANDLE_RSTR, is_valid_lat, is_valid_lon, is_valid_ip, is_numeric, is_simplegeohandle
+from simplegeo.util import (json_decode, APIError, SIMPLEGEOHANDLE_RSTR,
+                            is_valid_lat, is_valid_lon,
+                            _assert_valid_lat, _assert_valid_lon,
+                            is_valid_ip, is_numeric, is_simplegeohandle)
 from simplegeo.models import Feature
 from simplegeo import Client as ParentClient
 
@@ -48,17 +49,22 @@ class Client(ParentClient):
 
     def delete_feature(self, simplegeohandle):
         """Delete a Places feature."""
-        precondition(is_simplegeohandle(simplegeohandle), "simplegeohandle is required to match the regex %s" % SIMPLEGEOHANDLE_RSTR, simplegeohandle=simplegeohandle)
+        if not is_simplegeohandle(simplegeohandle):
+            raise ValueError("simplegeohandle is required to match "
+                             "the regex %s" % SIMPLEGEOHANDLE_RSTR)
         endpoint = self._endpoint('feature', simplegeohandle=simplegeohandle)
         return self._request(endpoint, 'DELETE')[1]
 
     def search(self, lat, lon, radius=None, query=None, category=None):
         """Search for places near a lat/lon, within a radius (in kilometers)."""
-        precondition(is_valid_lat(lat), lat)
-        precondition(is_valid_lon(lon), lon)
-        precondition(radius is None or is_numeric(radius), radius)
-        precondition(query is None or isinstance(query, basestring), query)
-        precondition(category is None or isinstance(category, basestring), category)
+        _assert_valid_lat(lat)
+        _assert_valid_lon(lon)
+        if (radius and not is_numeric(radius)):
+            raise ValueError("Radius must be numeric.")
+        if (query and not isinstance(query, basestring)):
+            raise ValueError("Query must be a string.")
+        if (category and not isinstance(category, basestring)):
+            raise ValueError("Category must be a string.")
 
         if isinstance(query, unicode):
             query = query.encode('utf-8')
@@ -89,10 +95,14 @@ class Client(ParentClient):
         ipaddr and then does the same thing as search(), using that
         guessed latitude and longitude.
         """
-        precondition(is_valid_ip(ipaddr), ipaddr)
-        precondition(radius is None or is_numeric(radius), radius)
-        precondition(query is None or isinstance(query, basestring), query)
-        precondition(category is None or isinstance(category, basestring), category)
+        if not is_valid_ip(ipaddr):
+            raise ValueError("Address %s is not a valid IP" % ipaddr)
+        if (radius and not is_numeric(radius)):
+            raise ValueError("Radius must be numeric.")
+        if (query and not isinstance(query, basestring)):
+            raise ValueError("Query must be a string.")
+        if (category and not isinstance(category, basestring)):
+            raise ValueError("Category must be a string.")
 
         if isinstance(query, unicode):
             query = query.encode('utf-8')
@@ -124,9 +134,12 @@ class Client(ParentClient):
         HTTP proxy device between you and the server), and then does
         the same thing as search_by_ip(), using that IP address.
         """
-        precondition(radius is None or is_numeric(radius), radius)
-        precondition(query is None or isinstance(query, basestring), query)
-        precondition(category is None or isinstance(category, basestring), category)
+        if (radius and not is_numeric(radius)):
+            raise ValueError("Radius must be numeric.")
+        if (query and not isinstance(query, basestring)):
+            raise ValueError("Query must be a string.")
+        if (category and not isinstance(category, basestring)):
+            raise ValueError("Category must be a string.")
 
         if isinstance(query, unicode):
             query = query.encode('utf-8')
@@ -157,11 +170,14 @@ class Client(ParentClient):
         street address and then does the same thing as search(), using
         that deduced latitude and longitude.
         """
-        precondition(isinstance(address, basestring), address)
-        precondition(address != '', address)
-        precondition(radius is None or is_numeric(radius), radius)
-        precondition(query is None or isinstance(query, basestring), query)
-        precondition(category is None or isinstance(category, basestring), category)
+        if not isinstance(address, basestring) or not address.strip():
+            raise ValueError("Address must be a non-empty string.")
+        if (radius and not is_numeric(radius)):
+            raise ValueError("Radius must be numeric.")
+        if (query and not isinstance(query, basestring)):
+            raise ValueError("Query must be a string.")
+        if (category and not isinstance(category, basestring)):
+            raise ValueError("Category must be a string.")
 
         if isinstance(address, unicode):
             address = address.encode('utf-8')

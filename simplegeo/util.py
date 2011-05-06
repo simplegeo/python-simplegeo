@@ -1,8 +1,7 @@
 import re
 import ipaddr
-from pyutil import jsonutil as json
+import simplegeo.json as json
 from decimal import Decimal as D
-from pyutil.assertutil import _assert
 
 def json_decode(jsonstr):
     try:
@@ -18,18 +17,20 @@ def swap(tupleab):
 
 def deep_swap(struc):
     if is_numeric(struc[0]):
-        _assert (len(struc) == 2, (type(struc), repr(struc)))
-        _assert (is_numeric(struc[1]), (type(struc), repr(struc)))
+        if len(struc) != 2:
+            raise ValueError("Strucs must be (val, val)")
+        if not is_numeric(struc[1]):
+            raise ValueError("Strucs must contain numerics.")
         return swap(struc)
     return [deep_swap(sub) for sub in struc]
 
 def _assert_valid_lat(x):
     if not is_valid_lat(x):
-        raise TypeError("not a valid lat: %s" % (x,))
+        raise ValueError("not a valid lat: %s" % (x,))
 
 def _assert_valid_lon(x, strict=False):
     if not is_valid_lon(x, strict=strict):
-        raise TypeError("not a valid lon (strict=%s): %s" % (strict, x,))
+        raise ValueError("not a valid lon (strict=%s): %s" % (strict, x,))
 
 def is_valid_lat(x):
     return is_numeric(x) and (x <= 90) and (x >= -90)

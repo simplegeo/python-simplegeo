@@ -1,8 +1,7 @@
 import time
 import copy
-from pyutil import jsonutil as json
+import simplegeo.json as json
 from util import json_decode, deep_swap, deep_validate_lat_lon, is_simplegeohandle, SIMPLEGEOHANDLE_RSTR
-from pyutil.assertutil import precondition
 
 class Feature:
     def __init__(self, coordinates, geomtype='Point', simplegeohandle=None, properties=None, strict_lon_validation=False):
@@ -55,7 +54,7 @@ class Feature:
         """
         try:
             deep_validate_lat_lon(coordinates, strict_lon_validation=strict_lon_validation)
-        except TypeError, le:
+        except ValueError, le:
             raise TypeError("The first argument, 'coordinates' is required to be a 2-element sequence of lon, lat for a point (or a more complicated set of coordinates for polygons or multipolygons), but it was %s :: %r. The error that was raised from validating this was: %s" % (type(coordinates), coordinates, le))
 
         if not (simplegeohandle is None or is_simplegeohandle(simplegeohandle)):
@@ -65,7 +64,8 @@ class Feature:
         if not (record_id is None or isinstance(record_id, basestring)):
             raise TypeError("record_id is required to be None or a string, but it was: %r :: %s." % (type(record_id), record_id))
         self.strict_lon_validation = strict_lon_validation
-        precondition(coordinates)
+        if not coordinates:
+            raise ValueError("Coordinates may not be empty.")
         self.id = simplegeohandle
         self.coordinates = coordinates
         self.geomtype = geomtype

@@ -3,7 +3,7 @@ import random
 import unittest
 from decimal import Decimal as D
 
-from pyutil import jsonutil as json
+import simplegeo.json as json
 
 from simplegeo import Client
 from simplegeo.models import Record, Layer

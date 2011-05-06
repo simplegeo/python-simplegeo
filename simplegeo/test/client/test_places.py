@@ -4,7 +4,7 @@ import unittest
 import urllib
 from decimal import Decimal as D
 
-from pyutil import jsonutil as json
+import simplegeo.json as json
 import mock
 
 from simplegeo import Client
@@ -271,8 +271,8 @@ class PlacesTest(unittest.TestCase):
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': [rec1.to_dict(), rec2.to_dict()]}))
         self.client.places.http = mockhttp
 
-        self.failUnlessRaises(AssertionError, self.client.places.search, -91, 100)
-        self.failUnlessRaises(AssertionError, self.client.places.search, -81, 361)
+        self.failUnlessRaises(ValueError, self.client.places.search, -91, 100)
+        self.failUnlessRaises(ValueError, self.client.places.search, -81, 361)
 
         lat = D('11.03')
         lon = D('10.04')
@@ -294,8 +294,8 @@ class PlacesTest(unittest.TestCase):
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': [rec1.to_dict(), rec2.to_dict()]}))
         self.client.places.http = mockhttp
 
-        self.failUnlessRaises(AssertionError, self.client.places.search, -91, 100)
-        self.failUnlessRaises(AssertionError, self.client.places.search, -81, 361)
+        self.failUnlessRaises(ValueError, self.client.places.search, -91, 100)
+        self.failUnlessRaises(ValueError, self.client.places.search, -81, 361)
 
         lat = D('11.03')
         lon = D('10.04')
@@ -315,8 +315,8 @@ class PlacesTest(unittest.TestCase):
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': [rec1.to_dict(), rec2.to_dict()]}))
         self.client.places.http = mockhttp
 
-        self.failUnlessRaises(AssertionError, self.client.places.search_by_ip, 'this is not an IP address at all, silly')
-        self.failUnlessRaises(AssertionError, self.client.places.search_by_ip, -81, 181) # Someone accidentally passed lat, lon to search_by_ip().
+        self.failUnlessRaises(ValueError, self.client.places.search_by_ip, 'this is not an IP address at all, silly')
+        self.failUnlessRaises(ValueError, self.client.places.search_by_ip, -81, 181) # Someone accidentally passed lat, lon to search_by_ip().
 
         ipaddr = '192.0.32.10'
 
@@ -348,8 +348,8 @@ class PlacesTest(unittest.TestCase):
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, json.dumps({'type': "FeatureColllection", 'features': [rec1.to_dict(), rec2.to_dict()]}))
         self.client.places.http = mockhttp
 
-        self.failUnlessRaises(AssertionError, self.client.places.search_by_ip, 'this is not an IP address at all, silly')
-        self.failUnlessRaises(AssertionError, self.client.places.search_by_ip, -81, 181) # Someone accidentally passed lat, lon to search_by_ip().
+        self.failUnlessRaises(ValueError, self.client.places.search_by_ip, 'this is not an IP address at all, silly')
+        self.failUnlessRaises(ValueError, self.client.places.search_by_ip, -81, 181) # Someone accidentally passed lat, lon to search_by_ip().
 
         ipaddr = '192.0.32.10'
 
@@ -370,7 +370,7 @@ class PlacesTest(unittest.TestCase):
         self.client.places.http = mockhttp
 
         ipaddr = '192.0.32.10'
-        self.failUnlessRaises(AssertionError, self.client.places.search_by_my_ip, ipaddr) # Someone accidentally passed an ip addr to search_by_my_ip().
+        self.failUnlessRaises(ValueError, self.client.places.search_by_my_ip, ipaddr) # Someone accidentally passed an ip addr to search_by_my_ip().
 
         res = self.client.places.search_by_my_ip(query='monk❥y', category='animal')
         self.failUnless(isinstance(res, (list, tuple)), (repr(res), type(res)))
@@ -401,7 +401,7 @@ class PlacesTest(unittest.TestCase):
         self.client.places.http = mockhttp
 
         ipaddr = '192.0.32.10'
-        self.failUnlessRaises(AssertionError, self.client.places.search_by_my_ip, ipaddr) # Someone accidentally passed an ip addr to search_by_my_ip().
+        self.failUnlessRaises(ValueError, self.client.places.search_by_my_ip, ipaddr) # Someone accidentally passed an ip addr to search_by_my_ip().
 
         res = self.client.places.search_by_my_ip(query='monkeys', category='animal')
         self.failUnless(isinstance(res, (list, tuple)), (repr(res), type(res)))
@@ -421,7 +421,7 @@ class PlacesTest(unittest.TestCase):
 
         lat = D('11.03')
         lon = D('10.04')
-        self.failUnlessRaises(AssertionError, self.client.places.search_by_address, lat, lon) # Someone accidentally passed a lat,lon to search_by_address().
+        self.failUnlessRaises(ValueError, self.client.places.search_by_address, lat, lon) # Someone accidentally passed a lat,lon to search_by_address().
 
         addr = u'41 Decatur St, San Francisc❦, CA'
         res = self.client.places.search_by_address(addr, query='monkeys', category='animal')
@@ -457,7 +457,7 @@ class PlacesTest(unittest.TestCase):
 
         lat = D('11.03')
         lon = D('10.04')
-        self.failUnlessRaises(AssertionError, self.client.places.search_by_address, lat, lon) # Someone accidentally passed a lat,lon to search_by_address().
+        self.failUnlessRaises(ValueError, self.client.places.search_by_address, lat, lon) # Someone accidentally passed a lat,lon to search_by_address().
 
         addr = '41 Decatur St, San Francisco, CA'
         res = self.client.places.search_by_address(addr, query='monkeys', category='animal')
@@ -579,7 +579,7 @@ class PlacesTest(unittest.TestCase):
         self.client.places.http = mockhttp
 
         ipaddr = '192.0.32.10'
-        self.failUnlessRaises(AssertionError, self.client.places.search_by_my_ip, ipaddr) # Someone accidentally passed an ip addr to search_by_my_ip().
+        self.failUnlessRaises(ValueError, self.client.places.search_by_my_ip, ipaddr) # Someone accidentally passed an ip addr to search_by_my_ip().
         res = self.client.places.search_by_my_ip()
         self.failUnless(isinstance(res, (list, tuple)), (repr(res), type(res)))
         self.failUnlessEqual(len(res), 2)
@@ -598,7 +598,7 @@ class PlacesTest(unittest.TestCase):
 
         lat = D('11.03')
         lon = D('10.04')
-        self.failUnlessRaises(AssertionError, self.client.places.search_by_address, lat, lon) # Someone accidentally passed a lat,lon search_by_address().
+        self.failUnlessRaises(ValueError, self.client.places.search_by_address, lat, lon) # Someone accidentally passed a lat,lon search_by_address().
 
         addr = '41 Decatur St, San Francisco, CA'
         res = self.client.places.search_by_address(addr)

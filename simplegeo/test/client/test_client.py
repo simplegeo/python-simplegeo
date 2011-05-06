@@ -1,7 +1,7 @@
 import unittest
 from decimal import Decimal as D
 
-from pyutil import jsonutil as json
+import simplegeo.json as json
 import mock
 
 from simplegeo import Client

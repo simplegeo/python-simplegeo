@@ -1,8 +1,8 @@
 import urllib
 
-from pyutil.assertutil import precondition
-
-from simplegeo.util import json_decode, is_valid_lat, is_valid_lon, is_valid_ip
+from simplegeo.util import (json_decode, is_valid_lat, is_valid_lon,
+                            _assert_valid_lat, _assert_valid_lon,
+                            is_valid_ip)
 from simplegeo import Client as ParentClient
 
 
@@ -22,8 +22,8 @@ class Client(ParentClient):
         self.endpoints.update(map(lambda x: (x[0], api_version+x[1]), context_endpoints))
 
     def get_context(self, lat, lon):
-        precondition(is_valid_lat(lat), lat)
-        precondition(is_valid_lon(lon), lon)
+        _assert_valid_lat(lat)
+        _assert_valid_lon(lon)
         endpoint = self._endpoint('context', lat=lat, lon=lon)
         return json_decode(self._request(endpoint, "GET")[1])
 
@@ -31,7 +31,8 @@ class Client(ParentClient):
         """ The server uses guesses the latitude and longitude from
         the ipaddr and then does the same thing as get_context(),
         using that guessed latitude and longitude."""
-        precondition(is_valid_ip(ipaddr), ipaddr)
+        if not is_valid_ip(ipaddr):
+            raise ValueError("Address %s is not a valid IP" % ipaddr)
         endpoint = self._endpoint('context_by_ip', ip=ipaddr)
         return json_decode(self._request(endpoint, "GET")[1])
 
@@ -50,7 +51,8 @@ class Client(ParentClient):
         street address and then does the same thing as get_context(),
         using that deduced latitude and longitude.
         """
-        precondition(isinstance(address, basestring), address)
+        if not isinstance(address, basestring):
+            raise ValueError("Address must be a string.")
         endpoint = self._endpoint('context_by_address')
         return json_decode(self._request(endpoint, "GET", data={'address' : address})[1])
 

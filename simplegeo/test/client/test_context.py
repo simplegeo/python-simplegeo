@@ -106,15 +106,15 @@ class ContextTest(unittest.TestCase):
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
         self.client.context.http = mockhttp
 
-        self.failUnlessRaises(AssertionError, self.client.context.get_context_by_ip, '40.1,127.999')
+        self.failUnlessRaises(ValueError, self.client.context.get_context_by_ip, '40.1,127.999')
 
     def test_get_context_invalid(self):
         mockhttp = mock.Mock()
         mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
         self.client.context.http = mockhttp
 
-        self.failUnlessRaises(AssertionError, self.client.context.get_context, -91, 100)
-        self.failUnlessRaises(AssertionError, self.client.context.get_context, -11, 361)
+        self.failUnlessRaises(ValueError, self.client.context.get_context, -91, 100)
+        self.failUnlessRaises(ValueError, self.client.context.get_context, -11, 361)
 
     def test_get_context_no_body(self):
         mockhttp = mock.Mock()

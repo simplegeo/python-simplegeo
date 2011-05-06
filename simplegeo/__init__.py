@@ -4,8 +4,7 @@ from urlparse import urljoin
 import urllib
 from httplib2 import Http
 import oauth2 as oauth
-from pyutil import jsonutil as json
-from pyutil.assertutil import precondition
+import simplegeo.json as json
 import warnings
 
 from simplegeo.models import Feature
@@ -82,7 +81,8 @@ class Client(object):
             raise TypeError("simplegeohandle is required to match the regex %s, but it was %s :: %r" % (SIMPLEGEOHANDLE_RSTR, type(simplegeohandle), simplegeohandle))
         kwargs = {}
         if zoom:
-            precondition(zoom >= 1 and zoom <= 20, zoom)
+            if zoom < 1 or zoom > 20:
+                raise AssertionError("Zoom must be in the range 1..20")
             kwargs['zoom'] = zoom
         endpoint = self._endpoint('feature', simplegeohandle=simplegeohandle)
         return Feature.from_json(self._request(endpoint, 'GET', data=kwargs)[1])
