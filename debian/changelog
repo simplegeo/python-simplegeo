@@ -1,3 +1,16 @@
+python-simplegeo (3.0.108) lucid; urgency=low
+
+  [ Ian Eure ]
+  * Call unittest.main() if tests are invoked as scripts.
+  * Break dependency on pyutil.  - Use explicit checks instead of
+    _assert & precondition.  - Raise appropriate exception types (e.g.
+    ValueError).  - Add simplegeo.json helper for simplejson.  - Fix
+    tests.
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Fri, 06 May 2011 22:47:50 +0000
+
 python-simplegeo (3.0.107) lucid; urgency=low
 
   [ Ian Eure ]
