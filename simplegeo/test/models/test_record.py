@@ -26,4 +26,7 @@ class RecordTest(unittest.TestCase):
         self.assertEquals(record.layer, 'my_layer')
         self.assertEquals(record.key, 'value')
         self.assertEquals(record.type, 'object')
-                     
+
+
+if __name__ == '__main__':
+    unittest.main()

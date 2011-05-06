@@ -650,3 +650,7 @@ class PlacesTest(unittest.TestCase):
         self.assertEqual(mockhttp.method_calls[0][0], 'request')
         self.assertEqual(mockhttp.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/features/%s.json' % (API_VERSION, handle))
         self.assertEqual(mockhttp.method_calls[0][1][1], 'GET')
+
+
+if __name__ == '__main__':
+    unittest.main()

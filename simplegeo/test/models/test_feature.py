@@ -226,3 +226,7 @@ class FeatureTest(unittest.TestCase):
         dic = rec.to_dict()
         self.failUnlessEqual(dic.get('id'), None)
         self.failUnlessEqual(dic.get('properties', {}).get('record_id'), None)
+
+
+if __name__ == '__main__':
+    unittest.main()

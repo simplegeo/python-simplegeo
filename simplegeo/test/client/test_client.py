@@ -320,3 +320,7 @@ EXAMPLE_ANNOTATIONS = {
     }
 
 EXAMPLE_ANNOTATE_RESPONSE = {'status': 'success'}
+
+
+if __name__ == '__main__':
+    unittest.main()
