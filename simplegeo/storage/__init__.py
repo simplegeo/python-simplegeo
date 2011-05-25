@@ -83,6 +83,6 @@ class Client(ParentClient):
         endpoint = self._endpoint('layer', layer=name)
         return json_decode(self._request(endpoint, "GET")[1])
 
-    def get_layers(self):
+    def get_layers(self, **kwargs):
         endpoint = self._endpoint('layers')
-        return json_decode(self._request(endpoint, "GET")[1])
+        return json_decode(self._request(endpoint, "GET", data=kwargs)[1])

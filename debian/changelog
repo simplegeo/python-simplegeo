@@ -1,3 +1,12 @@
+python-simplegeo (3.0.111) lucid; urgency=low
+
+  [ mager ]
+  * Added contrib section with Google Translate call
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Thu, 19 May 2011 21:40:26 +0000
+
 python-simplegeo (3.0.108) lucid; urgency=low
 
   [ Ian Eure ]
