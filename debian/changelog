@@ -1,3 +1,12 @@
+python-simplegeo (3.0.112) lucid; urgency=low
+
+  [ Jon Rohan ]
+  * adding kwargs for limit and cursor to get passed in to get_layers
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Wed, 25 May 2011 17:36:39 +0000
+
 python-simplegeo (3.0.111) lucid; urgency=low
 
   [ mager ]
