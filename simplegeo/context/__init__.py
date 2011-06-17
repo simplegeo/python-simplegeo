@@ -16,7 +16,8 @@ class Client(ParentClient):
             ['context', '/context/%(lat)s,%(lon)s.json'],
             ['context_by_ip', '/context/%(ip)s.json'],
             ['context_by_my_ip', '/context/ip.json'],
-            ['context_by_address', '/context/address.json']
+            ['context_by_address', '/context/address.json'],
+            ['features_from_bbox', '/context/%(NW_lon)s,%(NW_lat)s,%(SE_lon)s,%(SE_lat)s.json']
         ]
 
         self.endpoints.update(map(lambda x: (x[0], api_version+x[1]), context_endpoints))
@@ -94,5 +95,14 @@ class Client(ParentClient):
         result = self._request(endpoint, 'GET', data=kwargs)[1]
         return json_decode(result)
 
+    def get_features_from_bbox(self, bbox, **kwargs):
 
+        NW_lon = bbox[1]
+        NW_lat = bbox[0]
+        SE_lon = bbox[3]
+        SE_lat = bbox[2]
+
+        endpoint = self._endpoint('features_from_bbox', NW_lon=NW_lon, NW_lat=NW_lat, SE_lon=SE_lon, SE_lat=SE_lat)
+        result = self._request(endpoint, 'GET', data=kwargs)[1]
+        return json_decode(result)
 
