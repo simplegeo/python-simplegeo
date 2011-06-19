@@ -96,6 +96,13 @@ class Client(ParentClient):
         return json_decode(result)
 
     def get_features_from_bbox(self, bbox, **kwargs):
+        """
+        This function takes a bbox tuple and returns all 
+        features that overlap that bounding box. Category
+        uses the format: categorytype__Name. Note the 
+        double underscore. Ex: category__Neighborhood or
+        type__Public%20Place
+        """
 
         NW_lon = bbox[1]
         NW_lat = bbox[0]
@@ -105,4 +112,25 @@ class Client(ParentClient):
         endpoint = self._endpoint('features_from_bbox', NW_lon=NW_lon, NW_lat=NW_lat, SE_lon=SE_lon, SE_lat=SE_lat)
         result = self._request(endpoint, 'GET', data=kwargs)[1]
         return json_decode(result)
+
+    def get_centroid(self, bbox):
+        """
+        This function takes a bbox tuple and approximates the
+        centroid. It returns a GeoJSON Point.
+        """
+
+        NW_lat = bbox[1]
+        NW_lon = bbox[0]
+        SE_lat = bbox[3]
+        SE_lon = bbox[2]
+
+        lat_diff = SE_lat - NW_lat
+        lon_diff = SE_lon - NW_lon
+
+        lat = NW_lat + (lat_diff/2)
+        lon = NW_lon + (lon_diff/2)
+
+        centroid = {'type':'Point','coordinates':[lon, lat]}
+
+        return centroid
 
