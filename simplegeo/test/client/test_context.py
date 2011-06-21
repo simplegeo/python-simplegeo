@@ -66,7 +66,7 @@ class ContextTest(unittest.TestCase):
 
         self.client.context.get_context(self.query_lat, self.query_lon)
 
-        self.assertEqual(mockhttp.method_calls[0][2]['body'], None)
+        self.assertEqual(mockhttp.method_calls[0][2]['body'], '')
         self.assertEqual(mockhttp.method_calls[0][2]['headers']['Authorization'], 'OAuth realm="http://api.simplegeo.com", oauth_body_hash="2jmj7l5rSw0yVb%2FvlWAYkK%2FYBwk%3D", oauth_nonce="5", oauth_timestamp="6", oauth_consumer_key="MY_OAUTH_KEY", oauth_signature_method="HMAC-SHA1", oauth_version="1.0", oauth_signature="aCYUTCHSeVlAQiu0CmG2tF71I74%3D"')
 
     def test_get_context_by_address(self):
@@ -78,6 +78,18 @@ class ContextTest(unittest.TestCase):
         self.client.context.get_context_by_address(addr)
         self.assertEqual(mockhttp.method_calls[0][0], 'request')
         self.assertEqual(mockhttp.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/context/address.json?address=%s' % (API_VERSION, urllib.quote_plus(addr)))
+        self.assertEqual(mockhttp.method_calls[0][1][1], 'GET')
+
+    def test_get_context_by_address(self):
+        mockhttp = mock.Mock()
+        mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
+        self.client.context.http = mockhttp
+
+        self.client.context.get_context_from_bbox(
+            D('37.69903420794415'), D('-122.4810791015625'),
+            D('37.80001858607365'), D('-122.40554809570312'))
+        self.assertEqual(mockhttp.method_calls[0][0], 'request')
+        self.assertEqual(mockhttp.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/context/37.69903420794415,-122.4810791015625,37.80001858607365,-122.40554809570312.json' % (API_VERSION))
         self.assertEqual(mockhttp.method_calls[0][1][1], 'GET')
 
     def test_get_context_by_my_ip(self):

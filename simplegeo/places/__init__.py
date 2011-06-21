@@ -55,7 +55,7 @@ class Client(ParentClient):
         endpoint = self._endpoint('feature', simplegeohandle=simplegeohandle)
         return self._request(endpoint, 'DELETE')[1]
 
-    def search(self, lat, lon, radius=None, query=None, category=None):
+    def search(self, lat, lon, radius=None, query=None, category=None, num=None):
         """Search for places near a lat/lon, within a radius (in kilometers)."""
         _assert_valid_lat(lat)
         _assert_valid_lon(lon)
@@ -65,6 +65,8 @@ class Client(ParentClient):
             raise ValueError("Query must be a string.")
         if (category and not isinstance(category, basestring)):
             raise ValueError("Category must be a string.")
+        if (num and not is_numeric(num)):
+            raise ValueError("Num parameter must be numeric.")
 
         if isinstance(query, unicode):
             query = query.encode('utf-8')
@@ -78,6 +80,8 @@ class Client(ParentClient):
             kwargs['q'] = query
         if category:
             kwargs['category'] = category
+        if num:
+            kwargs['num'] = num
 
         endpoint = self._endpoint('search', lat=lat, lon=lon)
 
@@ -86,7 +90,7 @@ class Client(ParentClient):
         fc = json_decode(result)
         return [Feature.from_dict(f) for f in fc['features']]
 
-    def search_by_ip(self, ipaddr, radius=None, query=None, category=None):
+    def search_by_ip(self, ipaddr, radius=None, query=None, category=None, num=None):
         """
         Search for places near an IP address, within a radius (in
         kilometers).
@@ -103,6 +107,8 @@ class Client(ParentClient):
             raise ValueError("Query must be a string.")
         if (category and not isinstance(category, basestring)):
             raise ValueError("Category must be a string.")
+        if (num and not is_numeric(num)):
+            raise ValueError("Num parameter must be numeric.")
 
         if isinstance(query, unicode):
             query = query.encode('utf-8')
@@ -116,6 +122,8 @@ class Client(ParentClient):
             kwargs['q'] = query
         if category:
             kwargs['category'] = category
+        if num:
+            kwargs['num'] = num
 
         endpoint = self._endpoint('search_by_ip', ipaddr=ipaddr)
 
@@ -124,7 +132,7 @@ class Client(ParentClient):
         fc = json_decode(result)
         return [Feature.from_dict(f) for f in fc['features']]
 
-    def search_by_my_ip(self, radius=None, query=None, category=None):
+    def search_by_my_ip(self, radius=None, query=None, category=None, num=None):
         """
         Search for places near your IP address, within a radius (in
         kilometers).
@@ -140,6 +148,8 @@ class Client(ParentClient):
             raise ValueError("Query must be a string.")
         if (category and not isinstance(category, basestring)):
             raise ValueError("Category must be a string.")
+        if (num and not is_numeric(num)):
+            raise ValueError("Num parameter must be numeric.")
 
         if isinstance(query, unicode):
             query = query.encode('utf-8')
@@ -153,6 +163,8 @@ class Client(ParentClient):
             kwargs['q'] = query
         if category:
             kwargs['category'] = category
+        if num:
+            kwargs['num'] = num
 
         endpoint = self._endpoint('search_by_my_ip')
 
@@ -161,7 +173,7 @@ class Client(ParentClient):
         fc = json_decode(result)
         return [Feature.from_dict(f) for f in fc['features']]
 
-    def search_by_address(self, address, radius=None, query=None, category=None):
+    def search_by_address(self, address, radius=None, query=None, category=None, num=None):
         """
         Search for places near the given address, within a radius (in
         kilometers).
@@ -178,6 +190,8 @@ class Client(ParentClient):
             raise ValueError("Query must be a string.")
         if (category and not isinstance(category, basestring)):
             raise ValueError("Category must be a string.")
+        if (num and not is_numeric(num)):
+            raise ValueError("Num parameter must be numeric.")
 
         if isinstance(address, unicode):
             address = address.encode('utf-8')
@@ -193,6 +207,8 @@ class Client(ParentClient):
             kwargs['q'] = query
         if category:
             kwargs['category'] = category
+        if num:
+            kwargs['num'] = num
  
         endpoint = self._endpoint('search_by_address')
 
