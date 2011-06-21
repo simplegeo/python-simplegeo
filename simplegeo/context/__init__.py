@@ -17,7 +17,7 @@ class Client(ParentClient):
             ['context_by_ip', '/context/%(ip)s.json'],
             ['context_by_my_ip', '/context/ip.json'],
             ['context_by_address', '/context/address.json'],
-            ['features_from_bbox', '/context/%(NW_lon)s,%(NW_lat)s,%(SE_lon)s,%(SE_lat)s.json']
+            ['context_from_bbox', '/context/%(sw_lat)s,%(sw_lon)s,%(ne_lat)s,%(ne_lon)s.json']
         ]
 
         self.endpoints.update(map(lambda x: (x[0], api_version+x[1]), context_endpoints))
@@ -25,14 +25,14 @@ class Client(ParentClient):
     def get_context(self, lat, lon, filter=None):
         _assert_valid_lat(lat)
         _assert_valid_lon(lon)
-        
+
         if (filter and not isinstance(filter, basestring)):
             raise ValueError("Query must be a string.")
-        
+
         kwargs = { }
         if filter:
             kwargs['filter'] = filter
-        
+
         endpoint = self._endpoint('context', lat=lat, lon=lon)
         result = self._request(endpoint, 'GET', data=kwargs)[1]
         return json_decode(result)
@@ -46,7 +46,7 @@ class Client(ParentClient):
             raise ValueError("Address %s is not a valid IP" % ipaddr)
         if (filter and not isinstance(filter, basestring)):
             raise ValueError("Query must be a string.")
-        
+
         kwargs = { }
         if filter:
             kwargs['filter'] = filter
@@ -64,7 +64,7 @@ class Client(ParentClient):
 
         if (filter and not isinstance(filter, basestring)):
             raise ValueError("Query must be a string.")
-        
+
         kwargs = { }
         if filter:
             kwargs['filter'] = filter
@@ -79,12 +79,12 @@ class Client(ParentClient):
         street address and then does the same thing as get_context(),
         using that deduced latitude and longitude.
         """
-        
+
         if not isinstance(address, basestring):
             raise ValueError("Address must be a string.")
         if (filter and not isinstance(filter, basestring)):
             raise ValueError("Query must be a string.")
-        
+
         kwargs = { }
         if filter:
             kwargs['filter'] = filter
@@ -95,42 +95,20 @@ class Client(ParentClient):
         result = self._request(endpoint, 'GET', data=kwargs)[1]
         return json_decode(result)
 
-    def get_features_from_bbox(self, bbox, **kwargs):
+    def get_context_from_bbox(self, sw_lat, sw_lon, ne_lat, ne_lon, **kwargs):
         """
-        This function takes a bbox tuple and returns all 
+        This function takes a bbox and returns all
         features that overlap that bounding box. Category
-        uses the format: categorytype__Name. Note the 
+        uses the format: categorytype__Name. Note the
         double underscore. Ex: category__Neighborhood or
         type__Public%20Place
+
+        Note that we do NOT use the GeoJSON ordering in our API URLs, just
+        responses, so the order here is (minlat, minlon, maxlat, maxlon).
         """
 
-        NW_lon = bbox[1]
-        NW_lat = bbox[0]
-        SE_lon = bbox[3]
-        SE_lat = bbox[2]
-
-        endpoint = self._endpoint('features_from_bbox', NW_lon=NW_lon, NW_lat=NW_lat, SE_lon=SE_lon, SE_lat=SE_lat)
+        endpoint = self._endpoint('context_from_bbox',
+                                  sw_lat=sw_lat, sw_lon=sw_lon,
+                                  ne_lat=ne_lat, ne_lon=ne_lon)
         result = self._request(endpoint, 'GET', data=kwargs)[1]
         return json_decode(result)
-
-    def get_centroid(self, bbox):
-        """
-        This function takes a bbox tuple and approximates the
-        centroid. It returns a GeoJSON Point.
-        """
-
-        NW_lat = bbox[1]
-        NW_lon = bbox[0]
-        SE_lat = bbox[3]
-        SE_lon = bbox[2]
-
-        lat_diff = SE_lat - NW_lat
-        lon_diff = SE_lon - NW_lon
-
-        lat = NW_lat + (lat_diff/2)
-        lon = NW_lon + (lon_diff/2)
-
-        centroid = {'type':'Point','coordinates':[lon, lat]}
-
-        return centroid
-
