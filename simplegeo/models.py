@@ -66,7 +66,8 @@ class Feature:
         self.strict_lon_validation = strict_lon_validation
         if not coordinates:
             raise ValueError("Coordinates may not be empty.")
-        self.id = simplegeohandle
+        if simplegeohandle is not None:
+            self.id = simplegeohandle
         self.coordinates = coordinates
         self.geomtype = geomtype
         self.properties = {'private': False}
@@ -101,15 +102,19 @@ class Feature:
         GeoJSON standad order (lon, lat) instead of SimpleGeo standard
         order (lat, lon).
         """
-        return {
+        d = {
             'type': 'Feature',
-            'id': self.id,
             'geometry': {
                 'type': self.geomtype,
                 'coordinates': deep_swap(self.coordinates)
             },
             'properties': copy.deepcopy(self.properties),
         }
+
+        if hasattr(self, 'id'):
+            d['id'] = self.id
+        
+        return d
 
     @classmethod
     def from_json(cls, jsonstr):

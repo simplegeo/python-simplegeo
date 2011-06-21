@@ -48,7 +48,7 @@ class PlacesTest(unittest.TestCase):
             self.assertEqual(args[1], 'POST')
 
             bodyobj = json.loads(kwargs['body'])
-            self.failUnlessEqual(bodyobj['id'], None)
+            self.failUnless(not hasattr(bodyobj, 'id'))
             methods_called.append(('request', args, kwargs))
             mockhttp.request = mockrequest2
             return ({'status': '202', 'content-type': 'application/json', 'location': newloc}, json.dumps({'id': handle}))
@@ -81,7 +81,7 @@ class PlacesTest(unittest.TestCase):
             self.assertEqual(args[1], 'POST')
 
             bodyobj = json.loads(kwargs['body'])
-            self.failUnlessEqual(bodyobj['id'], None)
+            self.failUnless(not hasattr(bodyobj, 'id'))
             methods_called.append(('request', args, kwargs))
             mockhttp.request = mockrequest2
             return ({'status': '202', 'content-type': 'application/json', 'location': newloc}, json.dumps({'id': handle}))
@@ -111,7 +111,7 @@ class PlacesTest(unittest.TestCase):
             self.assertEqual(args[1], 'POST')
 
             bodyobj = json.loads(kwargs['body'])
-            self.failUnlessEqual(bodyobj['id'], None)
+            self.failUnless(not hasattr(bodyobj, 'id'))
             methods_called.append(('request', args, kwargs))
             mockhttp.request = mockrequest2
             return ({'status': '202', 'content-type': 'application/json', 'location': newloc}, json.dumps({'id': handle}))
