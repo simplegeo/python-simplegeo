@@ -27,7 +27,7 @@ class Client(ParentClient):
     def add_feature(self, feature):
         """Create a new feature, returns the simplegeohandle. """
         endpoint = self._endpoint('create')
-        if feature.id:
+        if hasattr(feature, 'id'):
             # only simplegeohandles or None should be stored in self.id
             assert is_simplegeohandle(feature.id)
             raise ValueError('A feature cannot be added to the Places database when it already has a simplegeohandle: %s' % (feature.id,))

@@ -9,7 +9,7 @@ class FeatureTest(unittest.TestCase):
     def test_geojson_is_correct(self):
         f = Feature(coordinates=[-90, D('171.0')], properties={'record_id': 'my_id'}, strict_lon_validation=True)
         stringy = f.to_json()
-        self.failUnlessEqual(stringy, '{"geometry": {"type": "Point", "coordinates": [171.0, -90]}, "type": "Feature", "id": null, "properties": {"record_id": "my_id", "private": false}}')
+        self.failUnlessEqual(stringy, '{"geometry": {"type": "Point", "coordinates": [171.0, -90]}, "type": "Feature", "properties": {"record_id": "my_id", "private": false}}')
 
     def test_swapper(self):
         t1 = (2, 1)
@@ -73,7 +73,7 @@ class FeatureTest(unittest.TestCase):
 
         record = Feature(coordinates=(D('11.0'), D('10.0')), properties={'record_id': 'my_id'})
         self.failUnlessEqual(record.properties.get('record_id'), 'my_id')
-        self.failUnlessEqual(record.id, None)
+        self.failUnless(not hasattr(record, 'id'))
         self.failUnlessEqual(record.geomtype, 'Point')
         self.failUnlessEqual(record.coordinates[0], D('11.0'))
         self.failUnlessEqual(record.coordinates[1], D('10.0'))
@@ -88,7 +88,7 @@ class FeatureTest(unittest.TestCase):
 
         record = Feature(coordinates=(D('11.0'), D('10.0')))
         self.failUnlessEqual(record.properties.get('record_id'), None)
-        self.failUnlessEqual(record.id, None)
+        self.failUnless(not hasattr(record, 'id'))
 
         record = Feature((D('11.0'), D('10.0')), properties={'record_id': 'my_id'})
         self.failUnlessEqual(record.properties.get('record_id'), 'my_id')
@@ -150,7 +150,7 @@ class FeatureTest(unittest.TestCase):
         self.assertEquals(record.properties['key'], 'value')
         self.assertEquals(record.properties['type'], 'object')
 
-        self.assertEquals(record.to_json(), '{"geometry": {"type": "Point", "coordinates": [10.0, 11.0]}, "type": "Feature", "id": null, "properties": {"record_id": "my_id", "type": "object", "private": false, "key": "value"}}')
+        self.assertEquals(record.to_json(), '{"geometry": {"type": "Point", "coordinates": [10.0, 11.0]}, "type": "Feature", "properties": {"record_id": "my_id", "type": "object", "private": false, "key": "value"}}')
 
         record_dict = {
                      'geometry' : {
