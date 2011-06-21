@@ -1,3 +1,13 @@
+python-simplegeo (3.0.115) lucid; urgency=low
+
+  [ Andrew Mager ]
+  * When creating a new place/feature, feature object doesn't need ID
+    because it's created on the server side.
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Tue, 21 Jun 2011 20:49:14 +0000
+
 python-simplegeo (3.0.114) lucid; urgency=low
 
   [ mager ]
