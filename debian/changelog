@@ -1,3 +1,24 @@
+python-simplegeo (3.0.114) lucid; urgency=low
+
+  [ mager ]
+  * Added support for the num parameter in the Places client
+
+  [ Andrew Mager ]
+  * Added ability to filter in SimpleGeo Context client
+
+  [ mager ]
+  * Added get_features_from_bbox function
+  * Added get_centroid
+
+  [ Ben Standefer ]
+  * Remove centroid function since it's the middle of a bounding box,
+    not the centroid (Andrew might add real centroid with Shapely soon).
+    Fix the order of bbox bounds so it's consistent with our API's URL.
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Tue, 21 Jun 2011 00:11:04 +0000
+
 python-simplegeo (3.0.113) lucid; urgency=low
 
   * UNRELEASED
