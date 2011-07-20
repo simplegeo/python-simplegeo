@@ -1,3 +1,13 @@
+python-simplegeo (3.0.116) maverick; urgency=low
+
+  [ Ben Standefer ]
+  * Add support for extra params (for demographics), add tests for
+    filter= parameter and extra params.
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Wed, 20 Jul 2011 00:15:13 +0000
+
 python-simplegeo (3.0.115) lucid; urgency=low
 
   [ Andrew Mager ]
