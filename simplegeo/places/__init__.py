@@ -218,7 +218,7 @@ class Client(ParentClient):
         return [Feature.from_dict(f) for f in fc['features']]
 
 
-class NewClient(ParentClient):
+class Client12(ParentClient):
 
     def __init__(self, key, secret, **kwargs):
         ParentClient.__init__(self, key, secret, **kwargs)
