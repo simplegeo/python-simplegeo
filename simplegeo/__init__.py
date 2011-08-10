@@ -45,10 +45,10 @@ class Client(object):
         # Do not create recursive subclients.
         # Only create subclients if we are running __init__() from Client.
         if not isinstance(self, (ContextClient, PlacesClient,
-                                 StorageClient)):
+                                 Places12Client, StorageClient)):
             self.context = ContextClient(key, secret, host=host, port=port)
             self.places = PlacesClient(key, secret, host=host, port=port)
-            self.places_12 = NewPlacesClient(key, secret, host=host, port=port)
+            self.places12 = Places12Client(key, secret, host=host, port=port)
             self.storage = StorageClient(key, secret, host=host, port=port)
 
     # For backwards compatibility with the old Storage client.
@@ -154,5 +154,5 @@ class Client(object):
 
 from simplegeo.context import Client as ContextClient
 from simplegeo.places import Client as PlacesClient
-from simplegeo.places import NewClient as NewPlacesClient
+from simplegeo.places import Client12 as Places12Client
 from simplegeo.storage import Client as StorageClient
