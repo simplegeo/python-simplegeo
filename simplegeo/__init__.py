@@ -30,6 +30,7 @@ class Client(object):
     }
 
     def __init__(self, key, secret, api_version=API_VERSION, host="api.simplegeo.com", port=80, timeout=None):
+        self._use_oauth = True
         self.host = host
         self.port = port
         self.consumer = oauth.Consumer(key, secret)
@@ -128,16 +129,21 @@ class Client(object):
             else:
                 body = data
 
-        request = oauth.Request.from_consumer_and_token(self.consumer,
-            http_method=method, http_url=endpoint, parameters=params)
+        if self._use_oauth:
+            request = oauth.Request.from_consumer_and_token(self.consumer,
+                http_method=method, http_url=endpoint, parameters=params)
 
-        request.sign_request(self.signature, self.consumer, None)
-        headers = request.to_header(self.realm)
-        headers['User-Agent'] = 'SimpleGeo Python Client v%s' % __version__
+            request.sign_request(self.signature, self.consumer, None)
+            headers = request.to_header(self.realm)
+        else:
+            headers = {}
+
         headers.update(self.req_headers)
+        headers['User-Agent'] = 'SimpleGeo Python Client v%s' % (
+            __version__)
 
-        self.headers, content = self.http.request(endpoint, method, body=body,
-                                                  headers=headers)
+        (self.headers, content) = self.http.request(
+            endpoint, method, body=body, headers=headers)
 
         if self.headers['status'][0] not in ('2', '3'):
             raise APIError(int(self.headers['status']), content, self.headers)
