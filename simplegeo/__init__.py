@@ -41,11 +41,10 @@ class Client(object):
         self.http = Http(timeout=timeout)
         self.headers = {}
 
-        self.subclient = getattr(self, 'subclient', False)
-
         # Do not create recursive subclients.
         # Only create subclients if we are running __init__() from Client.
-        if not self.subclient:
+        if not isinstance(self, (ContextClient, PlacesClient,
+                                 StorageClient)):
             self.context = ContextClient(key, secret, host=host, port=port)
             self.places = PlacesClient(key, secret, host=host, port=port)
             self.storage = StorageClient(key, secret, host=host, port=port)
