@@ -1,3 +1,4 @@
+
 import urllib
 
 from simplegeo.util import (json_decode, APIError, SIMPLEGEOHANDLE_RSTR,
@@ -217,4 +218,202 @@ class Client(ParentClient):
         return [Feature.from_dict(f) for f in fc['features']]
 
 
+class NewClient(ParentClient):
 
+    def __init__(self, key, secret, **kwargs):
+        ParentClient.__init__(self, key, secret, **kwargs)
+
+        self.endpoints.update(
+            feature='1.2/features/%(simplegeohandle)s.json',
+            search='1.2/places/%(lat)s,%(lon)s.json',
+            search_bbox='1.2/places/%(lat_tr)s,%(lon_tr)s,%(lat_bl)s,%(lon_bl)s.json',
+            search_by_ip='1.2/places/%(ipaddr)s.json',
+            search_by_my_ip='1.2/places/ip.json',
+            search_by_address='1.2/places/address.json')
+
+    def _features(self, endpoint, method, data):
+        """Return features for a request."""
+        (headers, result) = self._request(
+            self._endpoint('search', lat=lat, lon=lon), 'GET', data=kwargs)
+        return map(Feature.from_dict, json_decode(result)['features'])
+
+    def search(self, lat, lon, radius=None, query=None, category=None,
+               num=None):
+        """Search for places near a lat/lon, within a radius (in kilometers)."""
+        _assert_valid_lat(lat)
+        _assert_valid_lon(lon)
+        if (radius and not is_numeric(radius)):
+            raise ValueError("Radius must be numeric.")
+        if (query and not isinstance(query, basestring)):
+            raise ValueError("Query must be a string.")
+        if (category and not isinstance(category, basestring)):
+            raise ValueError("Category must be a string.")
+        if (num and not is_numeric(num)):
+            raise ValueError("Num parameter must be numeric.")
+
+        if isinstance(query, unicode):
+            query = query.encode('utf-8')
+        if isinstance(category, unicode):
+            category = category.encode('utf-8')
+
+        kwargs = { }
+        if radius:
+            kwargs['radius'] = radius
+        if query:
+            kwargs['q'] = query
+        if category:
+            kwargs['category'] = category
+        if num:
+            kwargs['num'] = num
+
+        return self._features(self._endpoint('search', lat=lat, lon=lon),
+                              'GET', kwargs)
+
+    def search_bbox(self, lat_tl, lon_tl, lat_br, lon_br, query=None,
+                    category=None, num=None):
+        """Return places inside a box of (lat_tl, lon_tl), (lat_br, lon_br)."""
+        _assert_valid_lat(lat_tl)
+        _assert_valid_lat(lat_br)
+        _assert_valid_lon(lon_tl)
+        _assert_valid_lon(lon_br)
+        if (query and not isinstance(query, basestring)):
+            raise ValueError("Query must be a string.")
+        if (category and not isinstance(category, basestring)):
+            raise ValueError("Category must be a string.")
+        if (num and not is_numeric(num)):
+            raise ValueError("Num parameter must be numeric.")
+
+        if isinstance(query, unicode):
+            query = query.encode('utf-8')
+        if isinstance(category, unicode):
+            category = category.encode('utf-8')
+
+        kwargs = { }
+        if radius:
+            kwargs['radius'] = radius
+        if query:
+            kwargs['q'] = query
+        if category:
+            kwargs['category'] = category
+        if num:
+            kwargs['num'] = num
+
+        return self._features(
+            self._endpoint('search_bbox', lat_tl=lat_tl, lon_tl=lon_tl,
+                           lat_br=lat_br, lon_br=lon_br), 'GET', kwargs)
+
+    def search_by_ip(self, ipaddr, radius=None, query=None,
+                     category=None, num=None):
+        """
+        Search for places near an IP address, within a radius (in
+        kilometers).
+
+        The server uses guesses the latitude and longitude from the
+        ipaddr and then does the same thing as search(), using that
+        guessed latitude and longitude.
+        """
+        if not is_valid_ip(ipaddr):
+            raise ValueError("Address %s is not a valid IP" % ipaddr)
+        if (radius and not is_numeric(radius)):
+            raise ValueError("Radius must be numeric.")
+        if (query and not isinstance(query, basestring)):
+            raise ValueError("Query must be a string.")
+        if (category and not isinstance(category, basestring)):
+            raise ValueError("Category must be a string.")
+        if (num and not is_numeric(num)):
+            raise ValueError("Num parameter must be numeric.")
+
+        if isinstance(query, unicode):
+            query = query.encode('utf-8')
+        if isinstance(category, unicode):
+            category = category.encode('utf-8')
+
+        kwargs = { }
+        if radius:
+            kwargs['radius'] = radius
+        if query:
+            kwargs['q'] = query
+        if category:
+            kwargs['category'] = category
+        if num:
+            kwargs['num'] = num
+
+        return self._features(self._endpoint('search_by_ip', ipaddr=ipaddr),
+                              'GET', kwargs)
+
+    def search_by_my_ip(self, radius=None, query=None, category=None, num=None):
+        """
+        Search for places near your IP address, within a radius (in
+        kilometers).
+
+        The server gets the IP address from the HTTP connection (this
+        may be the IP address of your device or of a firewall, NAT, or
+        HTTP proxy device between you and the server), and then does
+        the same thing as search_by_ip(), using that IP address.
+        """
+        if (radius and not is_numeric(radius)):
+            raise ValueError("Radius must be numeric.")
+        if (query and not isinstance(query, basestring)):
+            raise ValueError("Query must be a string.")
+        if (category and not isinstance(category, basestring)):
+            raise ValueError("Category must be a string.")
+        if (num and not is_numeric(num)):
+            raise ValueError("Num parameter must be numeric.")
+
+        if isinstance(query, unicode):
+            query = query.encode('utf-8')
+        if isinstance(category, unicode):
+            category = category.encode('utf-8')
+
+        kwargs = { }
+        if radius:
+            kwargs['radius'] = radius
+        if query:
+            kwargs['q'] = query
+        if category:
+            kwargs['category'] = category
+        if num:
+            kwargs['num'] = num
+
+    return self._features(self._endpoint('search_by_my_ip'), 'GET', kwargs)
+
+    def search_by_address(self, address, radius=None, query=None,
+                          category=None, num=None):
+        """
+        Search for places near the given address, within a radius (in
+        kilometers).
+
+        The server figures out the latitude and longitude from the
+        street address and then does the same thing as search(), using
+        that deduced latitude and longitude.
+        """
+        if not isinstance(address, basestring) or not address.strip():
+            raise ValueError("Address must be a non-empty string.")
+        if (radius and not is_numeric(radius)):
+            raise ValueError("Radius must be numeric.")
+        if (query and not isinstance(query, basestring)):
+            raise ValueError("Query must be a string.")
+        if (category and not isinstance(category, basestring)):
+            raise ValueError("Category must be a string.")
+        if (num and not is_numeric(num)):
+            raise ValueError("Num parameter must be numeric.")
+
+        if isinstance(address, unicode):
+            address = address.encode('utf-8')
+        if isinstance(query, unicode):
+            query = query.encode('utf-8')
+        if isinstance(category, unicode):
+            category = category.encode('utf-8')
+
+        kwargs = { 'address': address }
+        if radius:
+            kwargs['radius'] = radius
+        if query:
+            kwargs['q'] = query
+        if category:
+            kwargs['category'] = category
+        if num:
+            kwargs['num'] = num
+
+        return self._features(self._endpoint('search_by_address'),
+                              'GET', kwargs)
