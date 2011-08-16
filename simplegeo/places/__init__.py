@@ -375,7 +375,7 @@ class Client12(ParentClient):
         if num:
             kwargs['num'] = num
 
-    return self._features(self._endpoint('search_by_my_ip'), 'GET', kwargs)
+        return self._features(self._endpoint('search_by_my_ip'), 'GET', kwargs)
 
     def search_by_address(self, address, radius=None, query=None,
                           category=None, num=None):
