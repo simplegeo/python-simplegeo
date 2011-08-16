@@ -21,6 +21,7 @@ API_VERSION = '1.0'
 
 class Client(object):
 
+    _use_oauth = True
     realm = "http://api.simplegeo.com"
     endpoints = {
         # Shared
@@ -30,13 +31,13 @@ class Client(object):
     }
 
     def __init__(self, key, secret, api_version=API_VERSION, host="api.simplegeo.com", port=80, timeout=None):
-        self._use_oauth = True
         self.host = host
         self.port = port
-        self.consumer = oauth.Consumer(key, secret)
-        self.key = key
-        self.secret = secret
-        self.signature = oauth.SignatureMethod_HMAC_SHA1()
+        if self._use_oauth:
+            self.consumer = oauth.Consumer(key, secret)
+            self.key = key
+            self.secret = secret
+            self.signature = oauth.SignatureMethod_HMAC_SHA1()
         self.uri = "http://%s:%s" % (host, port)
         self.req_headers = {}
         self.http = Http(timeout=timeout)
