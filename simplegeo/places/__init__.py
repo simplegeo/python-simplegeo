@@ -5,7 +5,6 @@ from simplegeo.util import (json_decode, APIError, SIMPLEGEOHANDLE_RSTR,
                             is_valid_lat, is_valid_lon,
                             _assert_valid_lat, _assert_valid_lon,
                             is_valid_ip, is_numeric, is_simplegeohandle)
-from simplegeo.models import Feature
 from simplegeo import Client as ParentClient
 
 
@@ -224,18 +223,23 @@ class Client12(ParentClient):
         ParentClient.__init__(self, key, secret, **kwargs)
 
         self.endpoints.update(
-            feature='1.2/features/%(simplegeohandle)s.json',
+            feature='1.2/features/%(place_id)s.json',
             search='1.2/places/%(lat)s,%(lon)s.json',
-            search_bbox='1.2/places/%(lat_tr)s,%(lon_tr)s,%(lat_bl)s,%(lon_bl)s.json',
+            search_text='1.2/places/search.json',
+            search_bbox='1.2/places/%(lat_tl)s,%(lon_tl)s,%(lat_br)s,%(lon_br)s.json',
             search_by_ip='1.2/places/%(ipaddr)s.json',
             search_by_my_ip='1.2/places/ip.json',
             search_by_address='1.2/places/address.json')
 
-    def _features(self, endpoint, method, data):
+    def _features(self, endpoint, method='GET', data={}):
         """Return features for a request."""
-        (headers, result) = self._request(
-            self._endpoint('search', lat=lat, lon=lon), 'GET', data=kwargs)
-        return map(Feature.from_dict, json_decode(result)['features'])
+        (headers, result) = self._request(endpoint, method, data=data)
+        return json_decode(result)
+
+    def get_feature(self, place_id):
+        """Return the GeoJSON representation of a feature."""
+        endpoint = self._endpoint('feature', place_id=place_id)
+        return json_decode(self._request(endpoint, 'GET')[1])
 
     def search(self, lat, lon, radius=None, query=None, category=None,
                num=None):
@@ -269,6 +273,30 @@ class Client12(ParentClient):
         return self._features(self._endpoint('search', lat=lat, lon=lon),
                               'GET', kwargs)
 
+    def search_text(self, query=None, category=None, num=None):
+        """Fulltext search for places."""
+        if (query and not isinstance(query, basestring)):
+            raise ValueError("Query must be a string.")
+        if (category and not isinstance(category, basestring)):
+            raise ValueError("Category must be a string.")
+        if (num and not is_numeric(num)):
+            raise ValueError("Num parameter must be numeric.")
+
+        if isinstance(query, unicode):
+            query = query.encode('utf-8')
+        if isinstance(category, unicode):
+            category = category.encode('utf-8')
+
+        kwargs = { }
+        if query:
+            kwargs['q'] = query
+        if category:
+            kwargs['category'] = category
+        if num:
+            kwargs['num'] = num
+
+        return self._features(self._endpoint('search_text'), 'GET', kwargs)
+
     def search_bbox(self, lat_tl, lon_tl, lat_br, lon_br, query=None,
                     category=None, num=None):
         """Return places inside a box of (lat_tl, lon_tl), (lat_br, lon_br)."""
@@ -289,8 +317,6 @@ class Client12(ParentClient):
             category = category.encode('utf-8')
 
         kwargs = { }
-        if radius:
-            kwargs['radius'] = radius
         if query:
             kwargs['q'] = query
         if category:
