@@ -226,7 +226,7 @@ class Client12(ParentClient):
             feature='1.2/features/%(place_id)s.json',
             search='1.2/places/%(lat)s,%(lon)s.json',
             search_text='1.2/places/search.json',
-            search_bbox='1.2/places/%(lat_tl)s,%(lon_tl)s,%(lat_br)s,%(lon_br)s.json',
+            search_bbox='1.2/places/%(lat_sw)s,%(lon_sw)s,%(lat_ne)s,%(lon_ne)s.json',
             search_by_ip='1.2/places/%(ipaddr)s.json',
             search_by_my_ip='1.2/places/ip.json',
             search_by_address='1.2/places/address.json')
@@ -307,13 +307,13 @@ class Client12(ParentClient):
         return self._respond(*self._request(self._endpoint('search_text'),
                                             'GET', data=kwargs))
 
-    def search_bbox(self, lat_tl, lon_tl, lat_br, lon_br, query=None,
+    def search_bbox(self, lat_sw, lon_sw, lat_ne, lon_ne, query=None,
                     category=None, num=None):
-        """Return places inside a box of (lat_tl, lon_tl), (lat_br, lon_br)."""
-        _assert_valid_lat(lat_tl)
-        _assert_valid_lat(lat_br)
-        _assert_valid_lon(lon_tl)
-        _assert_valid_lon(lon_br)
+        """Return places inside a box of (lat_sw, lon_sw), (lat_ne, lon_ne)."""
+        _assert_valid_lat(lat_sw)
+        _assert_valid_lat(lat_ne)
+        _assert_valid_lon(lon_sw)
+        _assert_valid_lon(lon_ne)
         if (query and not isinstance(query, basestring)):
             raise ValueError("Query must be a string.")
         if (category and not isinstance(category, basestring)):
@@ -335,8 +335,8 @@ class Client12(ParentClient):
             kwargs['num'] = num
 
         return self._respond(*self._request(self._endpoint(
-                    'search_bbox', lat_tl=lat_tl, lon_tl=lon_tl,
-                    lat_br=lat_br, lon_br=lon_br), 'GET', data=kwargs))
+                    'search_bbox', lat_sw=lat_sw, lon_sw=lon_sw,
+                    lat_ne=lat_ne, lon_ne=lon_ne), 'GET', data=kwargs))
 
     def search_by_ip(self, ipaddr, radius=None, query=None,
                      category=None, num=None):
