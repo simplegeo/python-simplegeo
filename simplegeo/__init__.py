@@ -21,6 +21,7 @@ API_VERSION = '1.0'
 
 class Client(object):
 
+    _use_oauth = True
     realm = "http://api.simplegeo.com"
     endpoints = {
         # Shared
@@ -32,22 +33,23 @@ class Client(object):
     def __init__(self, key, secret, api_version=API_VERSION, host="api.simplegeo.com", port=80, timeout=None):
         self.host = host
         self.port = port
-        self.consumer = oauth.Consumer(key, secret)
-        self.key = key
-        self.secret = secret
-        self.signature = oauth.SignatureMethod_HMAC_SHA1()
+        if self._use_oauth:
+            self.consumer = oauth.Consumer(key, secret)
+            self.key = key
+            self.secret = secret
+            self.signature = oauth.SignatureMethod_HMAC_SHA1()
         self.uri = "http://%s:%s" % (host, port)
         self.req_headers = {}
         self.http = Http(timeout=timeout)
         self.headers = {}
 
-        self.subclient = getattr(self, 'subclient', False)
-
         # Do not create recursive subclients.
         # Only create subclients if we are running __init__() from Client.
-        if not self.subclient:
+        if not isinstance(self, (ContextClient, PlacesClient,
+                                 Places12Client, StorageClient)):
             self.context = ContextClient(key, secret, host=host, port=port)
             self.places = PlacesClient(key, secret, host=host, port=port)
+            self.places12 = Places12Client(key, secret, host=host, port=port)
             self.storage = StorageClient(key, secret, host=host, port=port)
 
     # For backwards compatibility with the old Storage client.
@@ -129,16 +131,21 @@ class Client(object):
             else:
                 body = data
 
-        request = oauth.Request.from_consumer_and_token(self.consumer,
-            http_method=method, http_url=endpoint, parameters=params)
+        if self._use_oauth:
+            request = oauth.Request.from_consumer_and_token(self.consumer,
+                http_method=method, http_url=endpoint, parameters=params)
 
-        request.sign_request(self.signature, self.consumer, None)
-        headers = request.to_header(self.realm)
-        headers['User-Agent'] = 'SimpleGeo Python Client v%s' % __version__
+            request.sign_request(self.signature, self.consumer, None)
+            headers = request.to_header(self.realm)
+        else:
+            headers = {}
+
         headers.update(self.req_headers)
+        headers['User-Agent'] = 'SimpleGeo Python Client v%s' % (
+            __version__)
 
-        self.headers, content = self.http.request(endpoint, method, body=body,
-                                                  headers=headers)
+        (self.headers, content) = self.http.request(
+            endpoint, method, body=body, headers=headers)
 
         if self.headers['status'][0] not in ('2', '3'):
             raise APIError(int(self.headers['status']), content, self.headers)
@@ -148,4 +155,5 @@ class Client(object):
 
 from simplegeo.context import Client as ContextClient
 from simplegeo.places import Client as PlacesClient
+from simplegeo.places import Client12 as Places12Client
 from simplegeo.storage import Client as StorageClient

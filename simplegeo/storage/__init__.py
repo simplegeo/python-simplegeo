@@ -9,7 +9,6 @@ from simplegeo import Client as ParentClient
 class Client(ParentClient):
 
     def __init__(self, key, secret, api_version='0.1', **kwargs):
-        self.subclient = True
         ParentClient.__init__(self, key, secret, **kwargs)
 
         storage_endpoints = [
