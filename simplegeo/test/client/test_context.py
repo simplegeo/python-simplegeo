@@ -176,6 +176,32 @@ class ContextTest(unittest.TestCase):
         repr(e)
         str(e)
 
+    def test_get_context_with_filter(self):
+        mockhttp = mock.Mock()
+        mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
+        self.client.context.http = mockhttp
+
+        res = self.client.context.get_context(self.query_lat, self.query_lon, filter='weather,features')
+        self.assertEqual(mockhttp.method_calls[0][0], 'request')
+        self.assertEqual(mockhttp.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/context/%s,%s.json?filter=weather%%2Cfeatures' % (API_VERSION, self.query_lat, self.query_lon))
+        self.assertEqual(mockhttp.method_calls[0][1][1], 'GET')
+        # the code under test is required to have json-decoded this before handing it back
+        self.failUnless(isinstance(res, dict), (type(res), repr(res)))
+
+    def test_get_context_with_filter_and_context_args(self):
+        mockhttp = mock.Mock()
+        mockhttp.request.return_value = ({'status': '200', 'content-type': 'application/json', }, EXAMPLE_BODY)
+        self.client.context.http = mockhttp
+
+        context_args = {
+            'features__category': 'Neighborhood'
+            }
+        res = self.client.context.get_context(self.query_lat, self.query_lon, filter='weather,features', context_args=context_args)
+        self.assertEqual(mockhttp.method_calls[0][0], 'request')
+        self.assertEqual(mockhttp.method_calls[0][1][0], 'http://api.simplegeo.com:80/%s/context/%s,%s.json?filter=weather%%2Cfeatures&features__category=Neighborhood' % (API_VERSION, self.query_lat, self.query_lon))
+        self.assertEqual(mockhttp.method_calls[0][1][1], 'GET')
+        # the code under test is required to have json-decoded this before handing it back
+        self.failUnless(isinstance(res, dict), (type(res), repr(res)))
 
 EXAMPLE_BODY="""
 {
