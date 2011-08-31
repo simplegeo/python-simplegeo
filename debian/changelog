@@ -1,3 +1,53 @@
+python-simplegeo (3.0.120) maverick; urgency=low
+
+  [ Ben Standefer ]
+  * Add support for extra params (for demographics), add tests for
+    filter= parameter and extra params.
+
+  [ Ian Eure ]
+  * Refactor to remove subclient attribute from client instances.
+  * Make OAuth optional.
+  * SWAG out new Places client.
+  * Rename Places client classes.
+  * Fix syntax error.
+  * Fix ability to disable OAuth.
+  * Fix `search_bbox`, `_features`, and `get_feature`; add
+    `search_text`;
+  * Add `_respond`, which turns the raw response into something usable
+    by the calling code.
+  * Change over to SW/NE coordinates for bounding-box search.
+  * Fix places where we were using `num` instead of `limit`.
+  * Break Places clients out into separate files, fix one stray `num`
+    left in the 1.2 client.
+
+  [ Simple Geebus ]
+
+  [ Ian Eure ]
+  * Refactor to remove subclient attribute from client instances.
+  * Make OAuth optional.
+  * SWAG out new Places client.
+  * Rename Places client classes.
+  * Fix syntax error.
+  * Fix ability to disable OAuth.
+  * Fix `search_bbox`, `_features`, and `get_feature`; add
+    `search_text`;
+  * Add `_respond`, which turns the raw response into something usable
+    by the calling code.
+  * Change over to SW/NE coordinates for bounding-box search.
+  * Fix places where we were using `num` instead of `limit`.
+  * Break Places clients out into separate files, fix one stray `num`
+    left in the 1.2 client.
+  * Initialise `ParentClient.endpoints` in `ParentClient.__init__`,
+    otherwise `places.Client12` can’t declare an incompatible `features`
+    endpoint.
+  * Fix imports in Places clients.
+  * Change one endpoint from `features` to `places`.
+  * Fix typo
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Wed, 31 Aug 2011 23:58:47 +0000
+
 python-simplegeo (3.0.115) lucid; urgency=low
 
   [ Andrew Mager ]
