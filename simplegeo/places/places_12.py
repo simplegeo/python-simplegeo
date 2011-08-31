@@ -19,7 +19,7 @@ class Client(ParentClient):
         ParentClient.__init__(self, key, secret, **kwargs)
 
         self.endpoints.update(
-            feature='1.2/features/%(place_id)s.json',
+            feature='1.2/places/%(place_id)s.json',
             search='1.2/places/%(lat)s,%(lon)s.json',
             search_text='1.2/places/search.json',
             search_bbox='1.2/places/%(lat_sw)s,%(lon_sw)s,%(lat_ne)s,%(lon_ne)s.json',
