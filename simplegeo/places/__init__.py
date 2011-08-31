@@ -231,15 +231,23 @@ class Client12(ParentClient):
             search_by_my_ip='1.2/places/ip.json',
             search_by_address='1.2/places/address.json')
 
-    def _features(self, endpoint, method='GET', data={}):
-        """Return features for a request."""
-        (headers, result) = self._request(endpoint, method, data=data)
-        return json_decode(result)
+    def _respond(self, headers, response):
+        """Return the correct structure for this response."""
+        status = int(headers['status'])
+        if status >= 200 and status < 300:
+            return json_decode(response)
+
+        if (status >= 300 and status < 400 or
+            status < 200):
+            return {'headers': headers, 'body': response}
+
+        raise APIError(status, response, headers)
 
     def get_feature(self, place_id):
         """Return the GeoJSON representation of a feature."""
-        endpoint = self._endpoint('feature', place_id=place_id)
-        return json_decode(self._request(endpoint, 'GET')[1])
+        (headers, response) = self._request(
+            self._endpoint('feature', place_id=place_id), 'GET')
+        return self._respond(headers, response)
 
     def search(self, lat, lon, radius=None, query=None, category=None,
                num=None):
@@ -270,8 +278,9 @@ class Client12(ParentClient):
         if num:
             kwargs['num'] = num
 
-        return self._features(self._endpoint('search', lat=lat, lon=lon),
-                              'GET', kwargs)
+        return self._respond(*self._request(self._endpoint(
+                    'search', lat=lat, lon=lon),
+                              'GET', data=kwargs))
 
     def search_text(self, query=None, category=None, num=None):
         """Fulltext search for places."""
@@ -295,7 +304,8 @@ class Client12(ParentClient):
         if num:
             kwargs['num'] = num
 
-        return self._features(self._endpoint('search_text'), 'GET', kwargs)
+        return self._respond(*self._request(self._endpoint('search_text'),
+                                            'GET', data=kwargs))
 
     def search_bbox(self, lat_tl, lon_tl, lat_br, lon_br, query=None,
                     category=None, num=None):
@@ -324,9 +334,9 @@ class Client12(ParentClient):
         if num:
             kwargs['num'] = num
 
-        return self._features(
-            self._endpoint('search_bbox', lat_tl=lat_tl, lon_tl=lon_tl,
-                           lat_br=lat_br, lon_br=lon_br), 'GET', kwargs)
+        return self._respond(*self._request(self._endpoint(
+                    'search_bbox', lat_tl=lat_tl, lon_tl=lon_tl,
+                    lat_br=lat_br, lon_br=lon_br), 'GET', data=kwargs))
 
     def search_by_ip(self, ipaddr, radius=None, query=None,
                      category=None, num=None):
@@ -364,8 +374,8 @@ class Client12(ParentClient):
         if num:
             kwargs['num'] = num
 
-        return self._features(self._endpoint('search_by_ip', ipaddr=ipaddr),
-                              'GET', kwargs)
+        return self._respond(*self._request(self._endpoint(
+                    'search_by_ip', ipaddr=ipaddr), 'GET', data=kwargs))
 
     def search_by_my_ip(self, radius=None, query=None, category=None, num=None):
         """
@@ -401,7 +411,8 @@ class Client12(ParentClient):
         if num:
             kwargs['num'] = num
 
-        return self._features(self._endpoint('search_by_my_ip'), 'GET', kwargs)
+        return self._respond(*self._request(self._endpoint(
+                    'search_by_my_ip'), 'GET', data=kwargs))
 
     def search_by_address(self, address, radius=None, query=None,
                           category=None, num=None):
@@ -441,5 +452,5 @@ class Client12(ParentClient):
         if num:
             kwargs['num'] = num
 
-        return self._features(self._endpoint('search_by_address'),
-                              'GET', kwargs)
+        return self._respond(*self._request(self._endpoint(
+                    'search_by_address'), 'GET', data=kwargs))
