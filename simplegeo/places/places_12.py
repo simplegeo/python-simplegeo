@@ -6,8 +6,6 @@
 
 """Places 1.2 client."""
 
-import urllib
-
 from simplegeo.util import (json_decode, APIError, SIMPLEGEOHANDLE_RSTR,
                             is_valid_lat, is_valid_lon,
                             _assert_valid_lat, _assert_valid_lon,
