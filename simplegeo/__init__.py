@@ -23,14 +23,14 @@ class Client(object):
 
     _use_oauth = True
     realm = "http://api.simplegeo.com"
-    endpoints = {
-        # Shared
-        'feature': '1.0/features/%(simplegeohandle)s.json',
-        'annotations': '1.0/features/%(simplegeohandle)s/annotations.json',
-        # More endpoints are added by mixins.
-    }
 
     def __init__(self, key, secret, api_version=API_VERSION, host="api.simplegeo.com", port=80, timeout=None):
+        self.endpoints = {
+            # Shared
+            'feature': '1.0/features/%(simplegeohandle)s.json',
+            'annotations': '1.0/features/%(simplegeohandle)s/annotations.json',
+            # More endpoints are added by mixins.
+            }
         self.host = host
         self.port = port
         if self._use_oauth:
