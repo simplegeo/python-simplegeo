@@ -11,7 +11,7 @@ from simplegeo.util import (json_decode, APIError, SIMPLEGEOHANDLE_RSTR,
                             _assert_valid_lat, _assert_valid_lon,
                             is_valid_ip, is_numeric, is_simplegeohandle)
 from simplegeo import Client as ParentClient
-from simplegeo.models import Feature
+nfrom simplegeo.models import Feature
 
 class Client(ParentClient):
 
