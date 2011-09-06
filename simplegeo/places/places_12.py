@@ -46,7 +46,7 @@ class Client(ParentClient):
         return self._respond(headers, response)
 
     def search(self, lat, lon, radius=None, query=None, category=None,
-               limit=None):
+               limit=None, start=None):
         """Search for places near a lat/lon, within a radius (in kilometers)."""
         _assert_valid_lat(lat)
         _assert_valid_lon(lon)
@@ -58,6 +58,8 @@ class Client(ParentClient):
             raise ValueError("Category must be a string.")
         if (limit and not is_numeric(limit)):
             raise ValueError("Limit parameter must be numeric.")
+        if (start and not is_numeric(start)):
+            raise ValueError("Start parameter must be numeric.")
 
         if isinstance(query, unicode):
             query = query.encode('utf-8')
@@ -73,12 +75,14 @@ class Client(ParentClient):
             kwargs['category'] = category
         if limit:
             kwargs['limit'] = limit
+        if start:
+            kwargs['start'] = start
 
         return self._respond(*self._request(self._endpoint(
                     'search', lat=lat, lon=lon),
                               'GET', data=kwargs))
 
-    def search_text(self, query=None, category=None, limit=None):
+    def search_text(self, query=None, category=None, limit=None, start=None):
         """Fulltext search for places."""
         if (query and not isinstance(query, basestring)):
             raise ValueError("Query must be a string.")
@@ -86,6 +90,8 @@ class Client(ParentClient):
             raise ValueError("Category must be a string.")
         if (limit and not is_numeric(limit)):
             raise ValueError("Limit parameter must be numeric.")
+        if (start and not is_numeric(start)):
+            raise ValueError("Start parameter must be numeric.")
 
         if isinstance(query, unicode):
             query = query.encode('utf-8')
@@ -99,12 +105,14 @@ class Client(ParentClient):
             kwargs['category'] = category
         if limit:
             kwargs['limit'] = limit
+        if start:
+            kwargs['start'] = start
 
         return self._respond(*self._request(self._endpoint('search_text'),
                                             'GET', data=kwargs))
 
     def search_bbox(self, lat_sw, lon_sw, lat_ne, lon_ne, query=None,
-                    category=None, limit=None):
+                    category=None, limit=None, start=None):
         """Return places inside a box of (lat_sw, lon_sw), (lat_ne, lon_ne)."""
         _assert_valid_lat(lat_sw)
         _assert_valid_lat(lat_ne)
@@ -116,6 +124,8 @@ class Client(ParentClient):
             raise ValueError("Category must be a string.")
         if (limit and not is_numeric(limit)):
             raise ValueError("Limit parameter must be numeric.")
+        if (start and not is_numeric(start)):
+            raise ValueError("Start parameter must be numeric.")
 
         if isinstance(query, unicode):
             query = query.encode('utf-8')
@@ -129,13 +139,15 @@ class Client(ParentClient):
             kwargs['category'] = category
         if limit:
             kwargs['limit'] = limit
+        if start:
+            kwargs['start'] = start
 
         return self._respond(*self._request(self._endpoint(
                     'search_bbox', lat_sw=lat_sw, lon_sw=lon_sw,
                     lat_ne=lat_ne, lon_ne=lon_ne), 'GET', data=kwargs))
 
     def search_by_ip(self, ipaddr, radius=None, query=None,
-                     category=None, limit=None):
+                     category=None, limit=None, start=None):
         """
         Search for places near an IP address, within a radius (in
         kilometers).
@@ -154,6 +166,8 @@ class Client(ParentClient):
             raise ValueError("Category must be a string.")
         if (limit and not is_numeric(limit)):
             raise ValueError("Limit parameter must be numeric.")
+        if (start and not is_numeric(start)):
+            raise ValueError("Start parameter must be numeric.")
 
         if isinstance(query, unicode):
             query = query.encode('utf-8')
@@ -169,11 +183,14 @@ class Client(ParentClient):
             kwargs['category'] = category
         if limit:
             kwargs['limit'] = limit
+        if start:
+            kwargs['start'] = start
 
         return self._respond(*self._request(self._endpoint(
                     'search_by_ip', ipaddr=ipaddr), 'GET', data=kwargs))
 
-    def search_by_my_ip(self, radius=None, query=None, category=None, limit=None):
+    def search_by_my_ip(self, radius=None, query=None, category=None,
+                        limit=None, start=None):
         """
         Search for places near your IP address, within a radius (in
         kilometers).
@@ -191,6 +208,8 @@ class Client(ParentClient):
             raise ValueError("Category must be a string.")
         if (limit and not is_numeric(limit)):
             raise ValueError("Limit parameter must be numeric.")
+        if (start and not is_numeric(start)):
+            raise ValueError("Start parameter must be numeric.")
 
         if isinstance(query, unicode):
             query = query.encode('utf-8')
@@ -206,12 +225,14 @@ class Client(ParentClient):
             kwargs['category'] = category
         if limit:
             kwargs['limit'] = limit
+        if start:
+            kwargs['start'] = start
 
         return self._respond(*self._request(self._endpoint(
                     'search_by_my_ip'), 'GET', data=kwargs))
 
     def search_by_address(self, address, radius=None, query=None,
-                          category=None, limit=None):
+                          category=None, limit=None, start=None):
         """
         Search for places near the given address, within a radius (in
         kilometers).
@@ -237,6 +258,8 @@ class Client(ParentClient):
             query = query.encode('utf-8')
         if isinstance(category, unicode):
             category = category.encode('utf-8')
+        if (start and not is_numeric(start)):
+            raise ValueError("Start parameter must be numeric.")
 
         kwargs = { 'address': address }
         if radius:
@@ -247,6 +270,8 @@ class Client(ParentClient):
             kwargs['category'] = category
         if limit:
             kwargs['limit'] = limit
+        if start:
+            kwargs['start'] = start
 
         return self._respond(*self._request(self._endpoint(
                     'search_by_address'), 'GET', data=kwargs))
