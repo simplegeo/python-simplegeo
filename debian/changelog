@@ -1,3 +1,12 @@
+python-simplegeo (3.0.122) maverick; urgency=low
+
+  [ Ian Eure ]
+  * Add `start` argument to all endpoints to support pagination.
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Thu, 08 Sep 2011 17:44:07 +0000
+
 python-simplegeo (3.0.121) maverick; urgency=low
 
   * UNRELEASED
