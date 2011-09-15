@@ -1,3 +1,14 @@
+python-simplegeo (3.0.125) maverick; urgency=low
+
+  [ Ian Eure ]
+  * Add a Response class to Places 1.2 client which returns headers, use
+    it for all responses instead of body and body/headers dicts
+    depending on status.
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Thu, 15 Sep 2011 20:45:37 +0000
+
 python-simplegeo (3.0.124) maverick; urgency=low
 
   * UNRELEASED
