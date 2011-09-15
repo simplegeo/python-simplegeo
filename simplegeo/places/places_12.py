@@ -6,11 +6,22 @@
 
 """Places 1.2 client."""
 
-from simplegeo.util import (json_decode, APIError, SIMPLEGEOHANDLE_RSTR,
-                            is_valid_lat, is_valid_lon,
+import simplejson as json
+
+from simplegeo.util import (json_decode, APIError, DecodeError,
+                            SIMPLEGEOHANDLE_RSTR, is_valid_lat, is_valid_lon,
                             _assert_valid_lat, _assert_valid_lon,
                             is_valid_ip, is_numeric, is_simplegeohandle)
 from simplegeo import Client as ParentClient
+
+
+class Response(dict):
+
+    """A response object which encapsulates headers & body."""
+
+    def __init__(self, body, headers):
+        dict.__init__(self, body)
+        self.headers = headers
 
 
 class Client(ParentClient):
@@ -29,15 +40,7 @@ class Client(ParentClient):
 
     def _respond(self, headers, response):
         """Return the correct structure for this response."""
-        status = int(headers['status'])
-        if status >= 200 and status < 300:
-            return json_decode(response)
-
-        if (status >= 300 and status < 400 or
-            status < 200):
-            return {'headers': headers, 'body': response}
-
-        raise APIError(status, response, headers)
+        return Response(json_decode(response), headers)
 
     def get_feature(self, place_id):
         """Return the GeoJSON representation of a feature."""
