@@ -1,3 +1,12 @@
+python-simplegeo (3.0.126) maverick; urgency=low
+
+  [ Ian Eure ]
+  * Don't die when we get empty bodies, which happens with 304s.
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Wed, 21 Sep 2011 18:29:38 +0000
+
 python-simplegeo (3.0.125) maverick; urgency=low
 
   [ Ian Eure ]
