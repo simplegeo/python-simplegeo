@@ -20,6 +20,10 @@ class Response(dict):
     """A response object which encapsulates headers & body."""
 
     def __init__(self, body, headers):
+        try:
+            body = json_decode(body)
+        except DecodeError:
+            body = {}
         dict.__init__(self, body)
         self.headers = headers
 
@@ -40,7 +44,7 @@ class Client(ParentClient):
 
     def _respond(self, headers, response):
         """Return the correct structure for this response."""
-        return Response(json_decode(response), headers)
+        return Response(response, headers)
 
     def get_feature(self, place_id):
         """Return the GeoJSON representation of a feature."""
