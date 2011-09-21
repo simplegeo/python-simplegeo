@@ -121,6 +121,25 @@ class Client(object):
         credentials with oauth.  Returns a tuple of (headers as dict,
         body as string).
         """
+
+        """
+        httplib2 is retarded and doesn't escape strings properly in URLs.
+        Because httplib2 sends HTTP requests for URLs with un-escaped spaces,
+        other pieces of software get confused and return unpredictable results.
+        For example, Nginx just returns with a string (no 400). httplib2 then
+        sees a string and says "hmm, must have been a 200!", when in fact the
+        URL requested was completely invalid.
+
+        Long story short, we are going to disallow un-encoded spaces in URLs
+        right here. I'd urlencode the spaces, but somebody might already be
+        doing that elsewhere to work around this sillyness.
+
+        """
+
+        if ' ' in endpoint:
+            raise ValueError('You may not have a space a URL. URL: %s' %
+                             endpoint)
+
         body = None
         params = {}
         if method == 'GET' and isinstance(data, dict) and len(data) > 0:
