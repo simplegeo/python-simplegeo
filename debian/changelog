@@ -1,3 +1,15 @@
+python-simplegeo (3.0.127) maverick; urgency=low
+
+  [ Ben Standefer ]
+  * Don't allow spaces in URLs. httplib2 is dumb and will interpret the
+    response as a 200 depending on how the remote software reacts to
+    spaces in URLs. (nginx returns a string because it doesn't even
+    think the response is HTTP.)
+
+  [ SimpleGeo Nerds ]
+
+ -- SimpleGeo Nerds <nerds@simplegeo.com>  Thu, 22 Sep 2011 23:41:46 +0000
+
 python-simplegeo (3.0.126) maverick; urgency=low
 
   [ Ian Eure ]
